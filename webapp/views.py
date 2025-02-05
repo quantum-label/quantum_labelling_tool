@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 
@@ -10,7 +11,7 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
 from code.fdp.constants import FDP_DEVELOPMENT_URL
-from code.helpers.django import redirect_with_message, generate_assessment_stars
+from code.helpers.django import redirect_with_message, generate_assessment_stars, load_glossary
 from code.label.label import plot_label, compute_scores
 from code.rdf.ttl_templating import generate_ttl_file
 # from code.rdf.ttl_templating import template_catalogue, fill_full_template
@@ -18,6 +19,11 @@ from webapp.models import Dataset, DQAssessment, DQMetric, DQMetricValue, EHDSCa
     DQCategoricalMetricCategory, UserOrganization, Catalogue, MaturityDimension, MaturityDimensionLevel, \
     MaturityDimensionValue
 
+# PRELOAD
+glossary = load_glossary()
+
+
+# END PRELOAD
 
 # Create your views here.
 def home_view(request: HttpRequest) -> HttpResponse:
@@ -906,7 +912,6 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                 f'Dataset not existing!'
             )
 
-
         # Needs to add 0 score box
         information_box_needed = False
 
@@ -928,7 +933,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                 'score': 0,  # Initialized to 0. This will accumulate the total score for the category.
                 'all_dimensions_ok': True,
                 'id': category.id
-                
+
             })
 
             dimensions = DQDimension.objects.filter(ehds_category=category)
@@ -949,7 +954,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                     metric_label = f"Metric #{metric_index + 1}"
                     metric_value = DQMetricValue.objects.filter(dq_assessment=assessment, dq_metric=metric).first()
                     answer_text = "Not answered"
-                    
+
                     if metric_value:
                         # Fetch the corresponding text for the categorical value
                         answer_text = metric_value.value
@@ -965,7 +970,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                         'weight': int(metric.weight),
                         'score': 0,
                         'metric_label': metric_label,
-                        'answer': answer_text,	
+                        'answer': answer_text,
                         'is_metric_ok': False
                     })
 
@@ -1188,3 +1193,18 @@ def download_assessment_rdf(request: HttpRequest) -> HttpResponse:
             '/dashboard',
             f'Wrong access!'
         )
+
+
+def glossary_view(request: HttpRequest) -> HttpResponse:
+    """
+    Glossary web page
+    :param request:
+    :return:
+    """
+    return render(
+        request,
+        'glossary.html',
+        context={
+            'glossary': glossary
+        }
+    )

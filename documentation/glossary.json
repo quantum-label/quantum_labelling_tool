@@ -1,0 +1,16 @@
+{
+  "Dataset": "definition",
+  "Catalogue": "catalogue",
+  "Data quality": "data quality",
+  "Dimension": "dimension",
+  "RDF": "RDF",
+  "Metric": "Metric",
+  "Data Quality Label": "Data quality label",
+  "Maturity": "maturity",
+  "Maturity assessment": "Maturity assessment",
+  "Reporter": "Reporter",
+  "Data controller": "Data controller",
+  "Organization": "Organization"
+
+
+}

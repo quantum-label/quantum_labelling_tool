@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}QUANTUM{% endblock %}
+
+{% block nav_glossary %}active{% endblock nav_glossary %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mt-3">Glossary</h2>
+    <hr>
+
+    <!-- Search Bar -->
+
+
+    <div class="mb-3 row mx-3 mt-5 text-start">
+        <div class="col-sm-12 col-md-2 d-flex align-items-center">
+            <b class="term">
+                Term
+            </b>
+        </div>
+        <div class="col-sm-12 col-md-2 d-flex align-items-center">
+            <b>
+                Definition
+            </b>
+        </div>
+        <div class="col-sm-12 col-md-8">
+            <div class="position-relative">
+                <input type="text" id="search-bar" class="form-control" placeholder="Search term..." onkeyup="filterGlossary()" autocomplete="off">
+                <ul id="autocomplete-list" class="list-group position-absolute w-100"></ul>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Glossary Terms -->
+    <div class="mx-3" id="glossary-list">
+        {% for term, definition in glossary.items %}
+        <div class="mb-3 row text-start glossary-item">
+            <div class="col-sm-12 col-md-2"><b class="term">{{ term }}</b></div>
+            <div class="col-sm-12 col-md-10">{{ definition }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<p class="mb-5"></p>
+
+<script>
+    let terms = [
+        {% for term in glossary.keys %}
+        "{{ term }}",
+        {% endfor %}
+    ];
+
+    function filterGlossary() {
+        let input = document.getElementById("search-bar").value.toLowerCase();
+        let items = document.querySelectorAll(".glossary-item");
+        let autocompleteList = document.getElementById("autocomplete-list");
+        autocompleteList.innerHTML = "";
+
+        // Show only matching glossary items
+        items.forEach(item => {
+            let term = item.querySelector(".term").textContent.toLowerCase();
+            item.style.display = term.includes(input) ? "" : "none";
+        });
+
+        // Populate the autocomplete dropdown
+        if (input) {
+            let suggestions = terms.filter(term => term.toLowerCase().includes(input)).slice(0, 5);
+            suggestions.forEach(suggestion => {
+                let listItem = document.createElement("li");
+                listItem.classList.add("list-group-item", "list-group-item-action");
+                listItem.textContent = suggestion;
+                listItem.style ="z-index:1000;";
+                listItem.onclick = function() {
+                    document.getElementById("search-bar").value = suggestion;
+                    filterGlossary();
+                    autocompleteList.innerHTML = ""; // Hide suggestions after selection
+                };
+                autocompleteList.appendChild(listItem);
+            });
+        }
+    }
+</script>
+{% endblock %}

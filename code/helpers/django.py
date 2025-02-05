@@ -1,7 +1,7 @@
-import math
+import json
 
 from django.contrib import messages
-from django.http import request, HttpResponseRedirect, HttpRequest
+from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import redirect
 
 
@@ -47,3 +47,18 @@ def compute_amount_of_stars(score: float):
         return 4
 
     return 5
+
+
+def load_glossary() -> dict:
+    try:
+        glossary_file = open('documentation/glossary.json')
+        glossary = json.load(glossary_file)
+        glossary_file.close()
+
+        return glossary
+    except:
+        import traceback
+        traceback.print_exc()
+        print('Failed loading the glossary!')
+
+    return {}
