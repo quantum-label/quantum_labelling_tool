@@ -1141,6 +1141,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
 
         # Maturity score
         dimensions_dictionary, matrix_score = compute_maturity_score(organization=organization)
+        maturity_percentage = matrix_score * 100 / 50
 
         return render(
             request,
@@ -1152,7 +1153,8 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                 'stars': stars_element,
                 'dataset_id': dataset_id,
                 'information_box_needed': information_box_needed,
-                'maturity_score': matrix_score
+                'maturity_score': matrix_score,
+                'maturity_percentage': maturity_percentage,
             }
         )
     else:
@@ -1183,6 +1185,7 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
         dimensions_dictionary, matrix_score = compute_maturity_score(organization=user_organization)
 
         maturity_plot = plot_maturity(user_organization)
+        maturity_percentage = matrix_score * 100 / 50
 
         return render(
             request,
@@ -1192,7 +1195,8 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
                 'score': matrix_score,
                 'total_score': 5 * 10,
                 'organization': user_organization.name,
-                'plot': maturity_plot
+                'plot': maturity_plot,
+                'maturity_percentage': maturity_percentage
             }
         )
     elif request.method == 'POST':

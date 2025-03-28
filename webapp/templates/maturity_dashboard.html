@@ -17,15 +17,15 @@
         <div>
             <h5>Maturity Score</h5>
             <p style="color: grey;"><i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i></p>
-            <p style="margin-top: 2%;">
-                Current score: <b class="maturity-level"> {{ score }}</b> <span style="font-size: 20px;"> / {{ total_score }}</span>
+            <p style="margin-top: 2%; margin-bottom: 6%;">
+                <b>Current score:</b> <b class="maturity-level">{{maturity_percentage}}%</b> <b class="left">&nbsp;&nbsp;= </b> <b class="maturity-level"> {{ score }}</b> <span style="font-size: 20px;"> / {{ total_score }}</span>
             </p>
             <div class="text-center">
                 {{ plot | safe }}
             </div>
         </div>
 
-        <h4 style="margin-top: 3%;">Maturity Assessment</h4>
+        <h4 style="margin-top: 8%;">Maturity Assessment</h4>
         <hr class="mt-0">
         <div class="d-flex justify-content-center mt-3">
             <button class="btn btn-secondary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection2" aria-expanded="false" aria-controls="helpSection2">
