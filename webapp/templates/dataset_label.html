@@ -51,6 +51,67 @@
             </div>
         </div>
 
+        <div class="text-center mb-5">
+            <h4>Dataset information</h4>
+            <hr class="mt-0">
+            <div class="border bg-light p-2 mb-5">
+                <div class="row mb--1">
+                    <div class="col-md-6">
+                        <p class="mb-1">
+                            <b>Catalogue</b>
+                            <br>
+                            {{ dataset.catalogue.title }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1">
+                            <b>Name</b>
+                            <br>
+                            {{ dataset.name }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            {% if assessment_percentage == 100 %}
+                <h5 class="text-success text-center"><b>This label shows a completed quality assessment.</b></h5>
+            {% else %}
+                <h5 class="text-warning text-center"><b>This is an ongoing evaluation; the displayed quality label is not final.</b></h5>
+            {% endif %}
+
+
+            <div class="progress-container mb-2">
+                 <div class="progress text-center opacity-75 mx-5" role="progressbar">
+                    <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <script>
+                // Function to update the progress bar
+                function updateProgress(percentage) {
+                    const progressBar = document.getElementById('progress');
+                    progressBar.style.width = percentage + '%';
+                    progressBar.textContent = percentage + '%';
+                    
+                    // Change color to green when 100% is reached
+                    if (percentage === 100) {
+                        progressBar.classList.remove('bg-warning'); // Remove yellow class
+                        progressBar.classList.add('bg-success');    // Add green class
+                    } else {
+                        // Ensure the bar is yellow if below 100%
+                        progressBar.classList.remove('bg-success');
+                        progressBar.classList.add('bg-warning');
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    updateProgress(Number("{{ assessment_percentage|floatformat:0 }}"));
+            });
+
+            </script>
+        </div> 
+
         <div class="col-md-2 col-sm-12"></div>
         <div class="col-md-8 col-sm-12">
 
