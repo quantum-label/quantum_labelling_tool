@@ -1149,6 +1149,13 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
         dimensions_dictionary, matrix_score = compute_maturity_score(organization=organization)
         maturity_percentage = matrix_score * 100 / 50
 
+        # show the progress bar in the label page
+        metrics = DQMetric.objects.count()
+        dq_metric_value_amount = DQMetricValue.objects.filter(dq_assessment=assessment).count()
+        assessment_percentage = int((dq_metric_value_amount / metrics) * 100)
+        catalogue = dataset.catalogue
+
+
         return render(
             request,
             'dataset_label.html',
@@ -1157,10 +1164,13 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                 'results': results,
                 'score': total_score,
                 'stars': stars_element,
+                'dataset': dataset,
                 'dataset_id': dataset_id,
+                'catalogue' : catalogue,
                 'information_box_needed': information_box_needed,
                 'maturity_score': matrix_score,
                 'maturity_percentage': maturity_percentage,
+                'assessment_percentage': assessment_percentage,
             }
         )
     else:
