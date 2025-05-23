@@ -64,8 +64,9 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
         category_score = scores[category.name]['score']
         category_max_score = scores[category.name]['relevance']
         category_name = f'{category.name.replace(" ", "<br>")}<br>{category_score:.2f}/{category_max_score:.2f}'
+        category_percentage = f'{category.name.replace(" ", "<br>")}<br>{(category_score/category_max_score)*100:.0f}%'
 
-        elements.append(category_name)
+        elements.append(category_percentage)
         parents.append('QUANTUM')
         values.append(category_max_score)
         custom_hover_texts.append(category_name)
@@ -76,7 +77,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
 
         # Store solid RGB color (full opacity) for the category
         category_color = f'rgb({base_color[0]},{base_color[1]},{base_color[2]})'
-        colors[category_name] = category_color
+        colors[category_percentage] = category_color
 
         for dimension in dimensions:
             score = scores[category.name]['dimensions'][dimension.name]['score']
@@ -86,8 +87,9 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
             max_score_str = f'{max_score:.2f}'
 
             dimension_name = f'{dimension.name.replace(" ", "<br>")}<br>{score_str}/{max_score_str}'
-            elements.append(dimension_name)
-            parents.append(category_name)
+            dimension_percentage = f'{dimension.name.replace(" ", "<br>")}<br>{(score/max_score)*100:.0f}%'
+            elements.append(dimension_percentage)
+            parents.append(category_percentage)
             custom_hover_texts.append(dimension_name)
 
             # Compute dimension opacity using the category's base color
@@ -95,7 +97,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
             rgba_color = f'rgba({base_color[0]},{base_color[1]},{base_color[2]},{opacity:.2f})'
 
             values.append(max_score)
-            colors[dimension_name] = rgba_color  # Assign color with opacity
+            colors[dimension_percentage] = rgba_color  # Assign color with opacity
 
     # Store color mapping explicitly in the dataset
     data = dict(
@@ -141,7 +143,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
             xref='paper', yref='paper',
             x=0.5, y=0.43,
             showarrow=False,
-            text=f'{stars}<br>{score_text}/100',
+            text=f'{stars}<br>{float(score_text):.0f}%',
             textangle=0,
             xanchor='center',
         )
