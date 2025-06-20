@@ -1240,6 +1240,7 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
 
             lookup_fields = {
                 'maturity_dimension': maturity_dimension,
+                'maturity_organization': user_organization
             }
             previous_maturity_dimension_level = MaturityDimensionValue.objects.filter(**lookup_fields)
 
