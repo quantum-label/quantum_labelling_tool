@@ -69,6 +69,7 @@ python manage.py runserver 0.0.0.0:8000
   - webapp
   - manage.py
 - Copy the content of "quantum_labelling_tool/docker" inside "QUANTUM" (keep in mind that it contains an .env file, which may be hidden)
+- If the web app is meant to be executed under a sub path (e.g. myurl.com/tool-subpath/) it is required to change on "quantum/settings.py" the "SUB_PATH_NAME" to the desired subpath (e.g. /tool-subpath)
 - In the "QUANTUM" folder execute by bash:
 ```bash
 docker build -t quantum_online_tool .

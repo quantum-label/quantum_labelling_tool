@@ -33,18 +33,18 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link {% block nav_home %}{% endblock nav_home %}" aria-current="page" href="/">Home</a>
+                    <a class="nav-link {% block nav_home %}{% endblock nav_home %}" aria-current="page" href="{% url 'home' %}">Home</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link {% block nav_dqd %}{% endblock nav_dqd %}" aria-current="page" href="/dashboard">DQ&U Dashboard</a>
+                    <a class="nav-link {% block nav_dqd %}{% endblock nav_dqd %}" aria-current="page" href="{% url 'dashboard' %}">DQ&U Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% block nav_md %}{% endblock nav_md %}" aria-current="page" href="/organization/maturity">Maturity Dashboard</a>
+                    <a class="nav-link {% block nav_md %}{% endblock nav_md %}" aria-current="page" href="{% url 'organization_maturity' %}">Maturity Dashboard</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link {% block nav_about %}{% endblock nav_about %}" aria-current="page" href="/about">About</a>
+                    <a class="nav-link {% block nav_about %}{% endblock nav_about %}" aria-current="page" href="{% url 'about' %}">About</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="https://quantumproject.zohodesk.eu/portal/en/home" target="_blank">FAQs</a>
@@ -56,11 +56,11 @@
         </div>
         <span class="navbar-text me-3">
             {% if user.is_authenticated %}
-                <a class="link-primary" href="/logout">Log out</a>
+                <a class="link-primary" href="{% url 'logout' %}">Log out</a>
                 &nbsp;
                 ({{ user }})
             {% else %}
-                <a class="link-primary" href="/login">Log in</a>
+                <a class="link-primary" href="{% url 'login' %}">Log in</a>
             {% endif %}
         </span>
 

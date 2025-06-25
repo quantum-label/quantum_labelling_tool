@@ -124,19 +124,27 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_ROOT = 'staticfiles/'
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/login'
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+SUB_PATH_NAME = ''  # Subpath (e.g. '/quantum-tool') DO ONLY USE IF A REVERSE PROXY IS CONFIGURED TO SERVE. Else leave empty ''
+
+# For Django to generate correct URLs
+FORCE_SCRIPT_NAME = SUB_PATH_NAME
+
+# Static
+STATIC_URL = f'{SUB_PATH_NAME}/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Login
+LOGIN_URL = f'{SUB_PATH_NAME}/login'
+LOGIN_REDIRECT_URL = f'{SUB_PATH_NAME}/dashboard'

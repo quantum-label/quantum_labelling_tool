@@ -296,17 +296,17 @@
 </form>
 <div class="row mt-5">
     <div class="col-sm-4 text-end">
-        <a href="/dashboard">
+        <a href="{% url 'dashboard' %}">
             <button id="go_back" type="button" class="btn btn-primary">Go to DQ&U Dashboard</button>
         </a>
     </div>
     <div class="col-sm-4 text-center">
-        <a href="/dataset/assessment/rdf?id={{ dataset_id }}">
+        <a href="{% url 'dataset_assessment_rdf' %}?id={{ dataset_id }}">
             <button id="go_download" type="button" class="btn btn-success">Download RDF</button>
         </a>
     </div>
     <div class="col-sm-4 text-start">
-        <a href="/dataset/label?id={{dataset.id}}">
+        <a href="{% url 'dataset_label' %}?id={{dataset.id}}">
             <button id="go_rdf" type="button" class="btn btn-primary">Go to DQ&U label</button>
         </a>
     </div>
