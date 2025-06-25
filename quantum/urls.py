@@ -35,5 +35,5 @@ urlpatterns = [
     path('catalogue/create', catalogue_create_view, name='catalogue_create'),
     path('catalogue/modify', catalogue_modify_view, name='catalogue_modify'),
     path('catalogue/delete', catalogue_delete_view, name='catalogue_delete'),
-    path('organization/maturityq', organization_maturity_view, name='organization_maturity'),
+    path('organization/maturity', organization_maturity_view, name='organization_maturity'),
 ]
