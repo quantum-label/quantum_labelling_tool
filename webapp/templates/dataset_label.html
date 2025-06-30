@@ -35,7 +35,8 @@
                             score, remains static in size. Surrounding it are the EHDS categories and, finally, the DQ&U dimensions, which vary
                             in size based on their scores.
                         </li>
-                        <li><b>Assessment Score</b>: Below the graph is a star rating and numerical score that reflect your overall dataset quality and utility. <u>Click on</u> "<i>Total Q&U Score</i>" for more information on how the star rating and the final score are
+                        <li><b>Assessment Score</b>: Below the graph is a star rating and numerical score that reflect your overall dataset quality and utility. <u>Click on</u> "<i>Total Q&U Score</i>" for more information on how the star rating and the
+                            final score are
                             calculated.
                         </li>
                         <li><b>Table</b>: The table is organized to include:</li>
@@ -103,45 +104,47 @@
                 </p>
 
                 <h2 style="margin-top: 20px; margin-bottom: 30px;" class="text-center"><a href="#" data-bs-toggle="modal" data-bs-target="#modal_finalScore">Total Q&U Score:</a> {{ score|floatformat:2 }} / 100 </h4>
-                
-                <div class="modal fade" id="modal_finalScore" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                    Stars & Final Score Calculation
-                                </h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class=" text-center modal-body">
-                                <p>
-                                    <b>Stars Calculation:</b>
-                                    <br>
-                                <p> ★☆☆☆☆ = 25% of DQ&U reached <br> ★★☆☆☆ = 45% of DQ&U reached <br> ★★★☆☆ = 60% of DQ&U reached <br> ★★★★☆ = 80% of DQ&U reached <br> ★★★★★ = ≥90% of DQ&U reached</p>
-                                </p>
-                                <hr>
-                                <p>
-                                    <b>Final Score Calculation:</b>
-                                    <br>
-                                </p>
-                                <div class="text-center overflow-auto">
-                                    <p> The Total Score is a weighted average that measures the dataset's quality and utility. Each dimension's score is based on its importance (compared to the other dimensions) multiplied by the performance of its metrics. The
-                                        dimension score is normalized by the total weight of all dimensions and then summed with all the other dimension scores.</p><br>
-                                    <p> \[\text{Total Score} =\frac{\sum_{i=1}^{n=12} \text{Dimension}_i^{\text{weight}} \times \left[\sum_{j=1}^{n=2} \left(\text{metric}_j^{\text{weight}} \times \text{metric value}_j \right) \right]}{\text{Total Weight of
-                                        Dimensions}} \times 100\]</p>
+
+                    <div class="modal fade" id="modal_finalScore" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                        Stars & Final Score Calculation
+                                    </h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <div class=" text-center modal-body">
+                                    <p>
+                                        <b>Stars Calculation:</b>
+                                        <br>
+                                    <p> ★☆☆☆☆ = 25% of DQ&U reached <br> ★★☆☆☆ = 45% of DQ&U reached <br> ★★★☆☆ = 60% of DQ&U reached <br> ★★★★☆ = 80% of DQ&U reached <br> ★★★★★ = ≥90% of DQ&U reached</p>
+                                    </p>
+                                    <hr>
+                                    <p>
+                                        <b>Final Score Calculation:</b>
+                                        <br>
+                                    </p>
+                                    <div class="text-center overflow-auto">
+                                        <p> The Total Score is a weighted average that measures the dataset's quality and utility. Each dimension's score is based on its importance (compared to the other dimensions) multiplied by the performance of its
+                                            metrics. The
+                                            dimension score is normalized by the total weight of all dimensions and then summed with all the other dimension scores.</p><br>
+                                        <p> \[\text{Total Score} =\frac{\sum_{i=1}^{n=12} \text{Dimension}_i^{\text{weight}} \times \left[\sum_{j=1}^{n=2} \left(\text{metric}_j^{\text{weight}} \times \text{metric value}_j \right) \right]}{\text{Total
+                                            Weight of
+                                            Dimensions}} \times 100\]</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
 
             <h2 class="text-center mt-5">Maturity score: {{ maturity_percentage }}% ({{ maturity_score }}/50)</h2>
 
-            
+
             {% if information_box_needed %}
             <div class="accordion mb-1" id="accordion_comments" style="margin-top: 50px;">
                 <div class="accordion-item">
@@ -155,7 +158,7 @@
                     </h2>
 
                     <div id="collapseCategory_comments" class="accordion-collapse collapse"
-                        data-bs-parent="#accordion_comments">
+                         data-bs-parent="#accordion_comments">
                         <div class="accordion-body">
 
                             <!-- First sub-section: Score = 0 due to selected level -->
@@ -171,8 +174,8 @@
                                         </button>
                                     </h2>
                                     <div id="collapseCategory_measureZERO"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordion_measureZERO">
+                                         class="accordion-collapse collapse"
+                                         data-bs-parent="#accordion_measureZERO">
                                         <div class="accordion-body">
                                             <div class="row mt-3" id="info">
                                                 <div class="card card-body alert alert-warning">
@@ -181,15 +184,15 @@
                                                     </span>
                                                     <hr>
                                                     {% for category in results %}
-                                                        {% for dimension in category.dimensions %}
-                                                            {% for metric in dimension.metrics %}
-                                                                {% if metric.is_zero_with_answer %}
-                                                                    <div>
-                                                                        <b>{{ category.name }}</b> → {{ dimension.name }} → {{ metric.metric_label }}
-                                                                    </div>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        {% endfor %}
+                                                    {% for dimension in category.dimensions %}
+                                                    {% for metric in dimension.metrics %}
+                                                    {% if metric.is_zero_with_answer %}
+                                                    <div>
+                                                        <b>{{ category.name }}</b> → {{ dimension.name }} → {{ metric.metric_label }}
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% endfor %}
                                                     {% endfor %}
                                                 </div>
                                             </div>
@@ -211,8 +214,8 @@
                                         </button>
                                     </h2>
                                     <div id="collapseCategory_notAnswer"
-                                        class="accordion-collapse collapse"
-                                        data-bs-parent="#accordion_notAnswer">
+                                         class="accordion-collapse collapse"
+                                         data-bs-parent="#accordion_notAnswer">
                                         <div class="accordion-body">
                                             <div class="row mt-3" id="info">
                                                 <div class="card card-body alert alert-warning">
@@ -221,15 +224,15 @@
                                                     </span>
                                                     <hr>
                                                     {% for category in results %}
-                                                        {% for dimension in category.dimensions %}
-                                                            {% for metric in dimension.metrics %}
-                                                                {% if metric.is_zero_unanswered %}
-                                                                    <div>
-                                                                        <b>{{ category.name }}</b> → {{ dimension.name }} → {{ metric.metric_label }}
-                                                                    </div>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        {% endfor %}
+                                                    {% for dimension in category.dimensions %}
+                                                    {% for metric in dimension.metrics %}
+                                                    {% if metric.is_zero_unanswered %}
+                                                    <div>
+                                                        <b>{{ category.name }}</b> → {{ dimension.name }} → {{ metric.metric_label }}
+                                                    </div>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% endfor %}
                                                     {% endfor %}
                                                 </div>
                                             </div>
@@ -358,7 +361,7 @@
                     {{ dimension.relevance|floatformat:2 }} %
                 </div>
                 <div class="col-sm-3">
-                    {{ dimension.score|floatformat:2 }} / 100
+                    {{ dimension.score|floatformat:2 }}
                 </div>
             </div>
             {% endfor %}
@@ -367,13 +370,13 @@
             <div class="mt-5">
                 <div class="row">
                     <div class="col-sm-6 text-end">
-                        <a href="/dataset/assessment/rdf?id={{ dataset_id }}">
+                        <a href="{% url 'dataset_assessment_rdf' %}?id={{ dataset_id }}">
                             <button type="button" class="btn btn-success">Download RDF label</button>
                         </a>
                     </div>
 
                     <div class="col-sm-6 text-start">
-                        <a href="/dataset/assessment/pdf?id={{ dataset_id }}">
+                        <a href="{% url 'dataset_assessment_pdf' %}?id={{ dataset_id }}">
                             <button type="button" class="btn btn-success">Download PDF</button>
                         </a>
                     </div>
@@ -382,14 +385,14 @@
             <div class="mt-3">
                 <div class="row">
                     <div class="col-sm-6 text-end">
-                        <a href="/dashboard">
+                        <a href="{% url 'dashboard' %}">
                             <button type="button" class="btn btn-primary">Go to DQ&U Dashboard</button>
                         </a>
                     </div>
 
                     <div class="col-sm-6 text-start">
-                        <a href="/dataset/assessment?id={{dataset_id}}">
-                            <button type="button" class="btn btn-primary">Go to DQ&U assesment</button>
+                        <a href="{% url 'dataset_assessment' %}?id={{dataset_id}}">
+                            <button type="button" class="btn btn-primary">Go to DQ&U Assessment</button>
                         </a>
                     </div>
                 </div>
