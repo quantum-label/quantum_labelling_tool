@@ -124,14 +124,14 @@
                         <td>{{ catalogue.title }}</td>
                         <td>{{ catalogue.version }}</td>
                         <td>
-                            <a href="/catalogue/modify?id={{ catalogue.id }}">
+                            <a href="{% url 'catalogue_modify' %}?id={{ catalogue.id }}">
                                 <button class="btn btn-secondary">
                                     Modify
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <a class="dropdown-item" href="/catalogue/delete?id={{ catalogue.id }}" onclick="confirmDeletion()">
+                            <a class="dropdown-item" href="{% url 'catalogue_delete' %}?id={{ catalogue.id }}" onclick="confirmDeletion()">
                                 <button class="btn btn-danger">
                                     Delete
                                 </button>
@@ -144,7 +144,7 @@
             </div>
             <div class="row justify-content-center mt-3">
                 <div class="col-auto">
-                    <a href="/catalogue/create">
+                    <a href="{% url 'catalogue_create' %}">
                         <button class="btn btn-success">
                             Create catalogue
                         </button>
@@ -235,21 +235,21 @@
                             </div>
                         </td>
                         <td>
-                            <a href="/dataset/assessment?id={{dataset.id}}">
+                            <a href="{% url 'dataset_assessment' %}?id={{dataset.id}}">
                                 <button class="btn btn-secondary">
                                     {{dataset.assessment_percentage}}
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <a href="/dataset/label?id={{dataset.id}}">
+                            <a href="{% url 'dataset_label' %}?id={{dataset.id}}">
                                 <button class="btn {{ dataset.stars_class }}">
                                     {{ dataset.stars | safe }}
                                 </button>
                             </a>
                         </td>
                         <td>
-                            <a href="/dataset/assessment/rdf?id={{ dataset.id }}">
+                            <a href="{% url 'dataset_assessment_rdf' %}?id={{ dataset.id }}">
                                 <button class="btn btn-secondary">
                                     <i class="fa-solid fa-download"></i>
                                 </button>
@@ -272,11 +272,11 @@
                                         </div>
                                         <div class="modal-body text-center">
                                             <!-- Modify Button -->
-                                            <a href="/dataset/modify?id={{dataset.id}}" class="btn btn-secondary m-2">
+                                            <a href="{% url 'dataset_modify' %}?id={{dataset.id}}" class="btn btn-secondary m-2">
                                                 Modify
                                             </a>
                                             <!-- Delete Button with confirmation function -->
-                                            <a href="/dataset/delete?id={{dataset.id}}" class="btn btn-danger m-2" onclick="return confirmDeletion()">
+                                            <a href="{% url 'dataset_delete' %}?id={{dataset.id}}" class="btn btn-danger m-2" onclick="return confirmDeletion()">
                                                 Delete
                                             </a>
                                         </div>
@@ -300,7 +300,7 @@
             <div class="text-center">
                 <div class="row">
                     <div class="col-sm-12 text-center">
-                        <a href="/dataset/create">
+                        <a href="{% url 'dataset_create' %}">
                             <button class="btn btn-success">
                                 Create dataset
                             </button>
