@@ -18,8 +18,11 @@
         <h1 class="text-center mt-3" style="margin-bottom: 20px;">QUANTUM label</h1>
 
         <div class="d-flex justify-content-center mb-5">
-            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection" aria-expanded="false" aria-controls="helpSection">
+            <button class="btn btn-secondary me-3" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection" aria-expanded="false" aria-controls="helpSection">
                 How to Use the Label Page?
+            </button>
+            <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection2" aria-expanded="false" aria-controls="helpSection">
+                Chart Interpretation
             </button>
         </div>
 
@@ -47,6 +50,40 @@
                             score are displayed. Click on the dimension name for more information on the metrics that measure it.
                         </li>
                         <li><b>Download RDF</b>: Once reviewed, click "<i>Download RDF label</i>" to save the quality and utility assessment in RDF format.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="helpSection2">
+            <div class="d-flex justify-content-center mb-5">
+                <div class="card card-body" style="max-width: 1000px;">
+                    <ul style="margin-bottom: 0%;">
+                        <li><b>Chart Structure</b>: The sunburst chart consists of three levels:
+                            <ul>
+                                <li><b>Center</b>: Represents the overall quality & utility assessment.</li>
+                                <li><b>Middle ring</b>: Represents the EHDS Categories. The score in each category is the sum of all dimensions scores within the category.</li>
+                                <li><b>Outer ring</b>: Represents the DQ&U Dimensions. Shows the score per dimension.</li>
+                            </ul>
+                        </li>
+
+                        <li><b>Color Gradient</b>: The base color of each category is assigned uniquely, while the dimensions inherit the same base color with varying opacity based on their score. As the score increases, the opacity of the color increases, making the slice more visible.</li>
+                        <li><b>Stars & Score in Center</b>: The chart center displays the total DQ&U score and a star rating:
+                            <ul>
+                                <li>★☆☆☆☆ = 25% of DQ&U reached</li>
+                                <li>★★☆☆☆ = 45% of DQ&U reached</li>
+                                <li>★★★☆☆ = 60% of DQ&U reached</li>
+                                <li>★★★★☆ = 80% of DQ&U reached</li>
+                                <li>★★★★★ = ≥90% of DQ&U reached</li>
+                            </ul>
+                        </li>
+                        <li><b>Hover Functionality</b>: Hover over any slice to see:
+                            <ul>
+                                <li>Category or dimension name</li>
+                                <li>Score / Max possible score</li>
+                            </ul>
+                        </li>
+
+                        <li><b>Note</b>: Even when the score is zero, the slice is still shown with a minimum visibility level to ensure no data is hidden.</li>
                     </ul>
                 </div>
             </div>
