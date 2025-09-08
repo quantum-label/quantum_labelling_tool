@@ -158,6 +158,7 @@ class PDFCreator:
                         metric_score = metric_score * (metric.weight / 100) * dimension_relevance
 
                         # Store both numeric and string score
+                        results[-1]['dimensions'][-1]['metrics'][-1]['report_URL'] = dq_metric_value.first().report_URL
                         results[-1]['dimensions'][-1]['metrics'][-1]['score'] = metric_score
                         results[-1]['dimensions'][-1]['metrics'][-1]['score_str'] = f"{metric_score:.2f}"
                         results[-1]['dimensions'][-1]['score'] += metric_score

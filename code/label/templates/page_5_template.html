@@ -72,6 +72,9 @@
     <p>Metric Weight: {{ metric.weight_str }}</p>
     <p>Metric Score: {{ metric.score_str }}</p>
     <p>Respective answer in the DQ&U Assessment: {{ metric.answer }}</p>
+    {% if metric.report_URL %}
+    <p>Report URL: <a href="{{ metric.report_URL }}">{{ metric.report_URL }}</a></p>
+    {% endif %}
 </div>
 {% endfor %}
 {% endfor %}
