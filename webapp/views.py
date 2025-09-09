@@ -10,8 +10,9 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
 from code.fdp.constants import FDP_DEVELOPMENT_URL
+from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
 
-from code.label.pdf_creator import PDFCreator
+from code.label.pdf.pdf_creator import PDFCreator
 from code.helpers.django import redirect_with_message, generate_assessment_stars, is_user_allowed_to_access
 from code.label.label import plot_label, compute_scores, compute_maturity_score, plot_maturity
 from code.rdf.ttl_templating import generate_ttl_file
@@ -1155,7 +1156,6 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
         assessment_percentage = int((dq_metric_value_amount / metrics) * 100)
         catalogue = dataset.catalogue
 
-
         return render(
             request,
             'dataset_label.html',
@@ -1166,7 +1166,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                 'stars': stars_element,
                 'dataset': dataset,
                 'dataset_id': dataset_id,
-                'catalogue' : catalogue,
+                'catalogue': catalogue,
                 'information_box_needed': information_box_needed,
                 'maturity_score': matrix_score,
                 'maturity_percentage': maturity_percentage,
@@ -1377,13 +1377,13 @@ def download_assessment_pdf(request: HttpRequest) -> HttpResponse:
         catalogue = dataset.catalogue
         assessment = DQAssessment.objects.filter(dataset=dataset).first()
 
-        pdf_creator = PDFCreator()
-        pdf_file = pdf_creator.generate_pdf(
+        pdf_creator = DQAssessmentPDFCreator(
             dataset=dataset,
             catalogue=catalogue,
             assessment=assessment,
             organization=organization
         )
+        pdf_file = pdf_creator.generate_pdf()
 
         response = HttpResponse(pdf_file, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="document.pdf"'
