@@ -66,7 +66,9 @@
                             </ul>
                         </li>
 
-                        <li><b>Color Gradient</b>: The base color of each category is assigned uniquely, while the dimensions inherit the same base color with varying opacity based on their score. As the score increases, the opacity of the color increases, making the slice more visible.</li>
+                        <li><b>Color Gradient</b>: The base color of each category is assigned uniquely, while the dimensions inherit the same base color with varying opacity based on their score. As the score increases, the opacity of the color increases,
+                            making the slice more visible.
+                        </li>
                         <li><b>Stars & Score in Center</b>: The chart center displays the total DQ&U score and a star rating:
                             <ul>
                                 <li>★☆☆☆☆ = 25% of DQ&U reached</li>
@@ -113,14 +115,14 @@
             </div>
 
             {% if assessment_percentage == 100 %}
-                <h5 class="text-success text-center"><b>This label shows a completed quality assessment.</b></h5>
+            <h5 class="text-success text-center"><b>This label shows a completed quality assessment.</b></h5>
             {% else %}
-                <h5 class="text-warning text-center"><b>This is an ongoing evaluation; the displayed quality label is not final.</b></h5>
+            <h5 class="text-warning text-center"><b>This is an ongoing evaluation; the displayed quality label is not final.</b></h5>
             {% endif %}
 
 
             <div class="progress-container mb-2">
-                 <div class="progress text-center opacity-75 mx-5" role="progressbar">
+                <div class="progress text-center opacity-75 mx-5" role="progressbar">
                     <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
                 </div>
             </div>
@@ -148,7 +150,7 @@
             });
 
             </script>
-        </div> 
+        </div>
 
         <div class="col-md-2 col-sm-12"></div>
         <div class="col-md-8 col-sm-12">
@@ -317,25 +319,25 @@
             </div>
 
             <div class="row mt-3">
-                <div class="col-sm-3">
+                <div class="col-3">
                     <b>
                         EHDS
                         <span class="question-mark" data-bs-toggle="tooltip" title="European Health Data Space Categories grouping different dimensions." style="cursor: pointer;">?</span>
                     </b>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     <b>
                         Dimension
                         <span class="question-mark" data-bs-toggle="tooltip" title="Click on the dimension name for more information." style="cursor: pointer;">?</span>
                     </b>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     <b>
                         Dim. weight
                         <span class="question-mark" data-bs-toggle="tooltip" title="This represents the weight of the dimension in the overall quality and utility score calculation." style="cursor: pointer;">?</span>
                     </b>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     <b>
                         Dim. score
                         <span class="question-mark" data-bs-toggle="tooltip" title="This represents the score of the dimension in the overall quality and utility score calculation." style="cursor: pointer;">?</span>
@@ -363,9 +365,9 @@
 
             {% for dimension in category.dimensions %}
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-3">
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal_{{ category.id }}_{{ dimension.id }}">
                         {{ dimension.name }}
                     </a>
@@ -407,6 +409,15 @@
                                             <br>
                                             {{ metric.answer }}
                                         </p>
+                                        <p>
+                                            <b>Report URL</b>
+                                            <br>
+                                            {% if metric.report_URL %}
+                                            <a href="{{ metric.report_URL }}">{{ metric.report_URL }}</a>
+                                            {% else %}
+                                            No report URL available
+                                            {% endif %}
+                                        </p>
                                         <hr>
                                     </div>
                                     {% endfor %}
@@ -418,10 +429,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     {{ dimension.relevance|floatformat:2 }} %
                 </div>
-                <div class="col-sm-3">
+                <div class="col-3">
                     {{ dimension.score|floatformat:2 }}
                 </div>
             </div>
@@ -430,13 +441,13 @@
 
             <div class="mt-5">
                 <div class="row">
-                    <div class="col-sm-6 text-end">
+                    <div class="col-6 text-end">
                         <a href="{% url 'dataset_assessment_rdf' %}?id={{ dataset_id }}">
                             <button type="button" class="btn btn-success">Download RDF label</button>
                         </a>
                     </div>
 
-                    <div class="col-sm-6 text-start">
+                    <div class="col-6 text-start">
                         <a href="{% url 'dataset_assessment_pdf' %}?id={{ dataset_id }}">
                             <button type="button" class="btn btn-success">Download PDF</button>
                         </a>
@@ -445,13 +456,13 @@
             </div>
             <div class="mt-3">
                 <div class="row">
-                    <div class="col-sm-6 text-end">
+                    <div class="col-6 text-end">
                         <a href="{% url 'dashboard' %}">
                             <button type="button" class="btn btn-primary">Go to DQ&U Dashboard</button>
                         </a>
                     </div>
 
-                    <div class="col-sm-6 text-start">
+                    <div class="col-6 text-start">
                         <a href="{% url 'dataset_assessment' %}?id={{dataset_id}}">
                             <button type="button" class="btn btn-primary">Go to DQ&U Assessment</button>
                         </a>
