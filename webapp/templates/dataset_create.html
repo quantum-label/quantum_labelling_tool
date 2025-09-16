@@ -42,6 +42,25 @@
                         <span class="question-mark" data-bs-toggle="tooltip" title="This is the HTTP URI (Unique Resource Identifier) of the dataset. 
                         Provide if available for further references." style="cursor: pointer;">?</span>
                     </label>
+                    <div>
+                        <small class="text-muted">
+                            Examples:
+                            <ul>
+                                <li>
+                                    https://data.example.org/dataset/12345
+                                </li>
+                                <li>
+                                    https://data.example.org/dataset/12345/v1.0
+                                </li>
+                                <li>
+                                    https://data.example.org/dataset/12345.rdf
+                                </li>
+                                <li>
+                                    https://data.example.org/dataset/12345/metadata
+                                </li>
+                            </ul>
+                        </small>
+                    </div>
                     <input type="text" class="form-control" name="dataset_URI" maxlength="512" id="dataset_URI">
                     <small id="dataset_URI_count" class="form-text text-muted">512 characters left</small>
                 </div>
@@ -55,7 +74,7 @@
                     <input type="text" class="form-control" name="dataset_name" maxlength="256" id="dataset_name" required>
                     <small id="dataset_name_count" class="form-text text-muted">256 characters left</small>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label">
                         Dataset Description
