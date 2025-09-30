@@ -99,7 +99,7 @@
                                     data-bs-toggle="collapse"
                                     data-bs-target="#collapseCategory{{ dimension.id }}"
                                     aria-controls="collapseCategory{{ dimension.id }}">
-                                {{ dimension_name }}
+                                {{ forloop.counter }}. {{ dimension_name }}
                             </button>
                         </h2>
                         <div id="collapseCategory{{ dimension.id }}"
