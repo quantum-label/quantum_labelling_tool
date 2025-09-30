@@ -1112,6 +1112,7 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
                     metric_score = 0
 
                     if len(dq_metric_value) >= 1:
+                        results[-1]['dimensions'][-1]['metrics'][-1]['report_URL'] = dq_metric_value.first().report_URL
                         current_value = str(dq_metric_value.first().value)
 
                     if getattr(metric, 'dqcategoricalmetric') is not None:
