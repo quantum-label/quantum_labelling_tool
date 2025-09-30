@@ -20,13 +20,13 @@ INSERT INTO webapp_dqdimension (name,definition,ehds_category_id,relevance) VALU
 	 ('Precision','Precision refers to the degree of approximation by which data can represent reality.',4,5.97),
 	 ('Validity','Validity refers to the degree to which representations of data in a dataset conform to the specification of a data model or data models.',4,7.96);
 INSERT INTO webapp_dqmetric (name,definition,additional_information,measurement_approach,formula,weight,dq_dimension_id,needs_report_URL) VALUES
-	 ('Availability','Availability of a data access & usage policy at the time of release of the dataset','HealthDCAT-AP access rights property refers to information that indicates whether the Dataset is open data, has access restrictions or is not public.','<a href="https://www.w3.org/TR/vocab-dcat/#Property:distribution_access_rights" target= "_blank">https://www.w3.org/TR/vocab-dcat/#Property:distribution_access_rights</a>','n/a',50.0,1,0),
-	 ('Average time','Average time from data access application to data release for a specific dataset','','The HDAB/data holder to provide the average using digital time-stamps for the process','n/a',50.0,1,0),
+	 ('Availability of a data access & usage policy','Availability of a data access & usage policy at the time of release of the dataset','HealthDCAT-AP access rights property refers to information that indicates whether the Dataset is open data, has access restrictions or is not public.','<a href="https://www.w3.org/TR/vocab-dcat/#Property:distribution_access_rights" target= "_blank">https://www.w3.org/TR/vocab-dcat/#Property:distribution_access_rights</a>','n/a',50.0,1,0),
+	 ('Average time from data access application to data release','Average time from data access application to data release for a specific dataset','','The HDAB/data holder to provide the average using digital time-stamps for the process','n/a',50.0,1,0),
 	 ('Coverage Rate','Coverage Rate (percentage of the eligible population represented in the dataset)','"Observed to expected methods suggested in the nominal group are fit for purpose.
 HealthDCAT-AP POPULATION COVERAGE: This property provides a definition of the population within the dataset."','According to data holder information: (Number of individuals in the dataset / Total eligible population) x 100%','"(Number of individuals in the dataset / Total eligible population*) x 100%
 
 (* according to data holder''s information)"',100.0,2,0),
-	 ('Expected population represented','How closely does the observed population represent the expected population?','Observed to expected methods suggested in the nominal group are fit for purpose.','According to data holder''s information.','n/a',100.0,3,0),
+	 ('Population representativity','How closely does the observed population represent the expected population?','Observed to expected methods suggested in the nominal group are fit for purpose.','According to data holder''s information.','n/a',100.0,3,0),
 	 ('Documentation of compliance','Is there documentation of compliance with ethical standards, conventions, protocols or regulations?','','According to data holder''s information.','n/a',100.0,4,0),
 	 ('Dataset source documentation','Is the source of the dataset documented?','','Ideally using a standard vocabulary as in DCAT-AP "dct:source; dct:creator; dct:contributor"','"dct:source
 dct:creator
@@ -37,26 +37,26 @@ An activity is something that occurs over a period of time and acts upon or with
 A derivation is a transformation of an entity into another, an update of an entity resulting in a new one, or the construction of a new entity based on a pre-existing entity."','Using PROV-O (PROV Ontology)','n/a',50.0,5,0),
 	 ('Existence of comprehensive standardised metadata','Existence of comprehensive standardised metadata','','Link/reference to the standardised metadata model','n/a',40.0,6,0),
 	 ('Existence of an exhaustive data dictionary at variable level','Existence of an exhaustive data dictionary at variable level','','Link/reference to the standardised vocabularies in the meta-data model. Note that what the data dictionary contains may depend on the type of data; in the case of non-structured data the data dictionary may include features on the data source, its components and its relationship with other data.','n/a',60.0,6,0),
-	 ('Is accuracy of the dataset documented?','Is accuracy of the dataset documented?','"A report describing the external validation measures taken, such as:
+	 ('Accuracy documentation','Is accuracy of the dataset documented?','"A report describing the external validation measures taken, such as:
 - conformance of variables to known (externally measured) distributions
 - conformance of variables to assumed value ranges of distributions
 - steps to validate measurement accuracy of measured variables"','The report should provide information on steps done to validate measurement accuracy of measured variables; in addition it should, at variable level, provide information on conformance to known (externally measured) distributions or to assumed value ranges of distributions.','n/a',100.0,7,1);
 INSERT INTO webapp_dqmetric (name,definition,additional_information,measurement_approach,formula,weight,dq_dimension_id,needs_report_URL) VALUES
-	 ('Is coherence of the dataset documented?','Is coherence of the dataset documented?','A report outlining how the data has changed with respect to its meaning over time, such as formats, semantics (stability of the data models), and methods.','At dataset level, the report should contain information on the changes observed in formats, semantics (stability of the data models), and methods.','n/a',100.0,8,1),
-	 ('Is completeness of the dataset documented?','Is completeness of the dataset documented?','"Using a framework or tools to generate variable level information of completeness in a quality report.
+	 ('Coherence documentation','Is coherence of the dataset documented?','A report outlining how the data has changed with respect to its meaning over time, such as formats, semantics (stability of the data models), and methods.','At dataset level, the report should contain information on the changes observed in formats, semantics (stability of the data models), and methods.','n/a',100.0,8,1),
+	 ('Completeness documentation','Is completeness of the dataset documented?','"Using a framework or tools to generate variable level information of completeness in a quality report.
 
 Completeness is typically measured for a single variable as:
 n(null values*) / n(records)
 
 
 *null values does not include explicit code values signifying that the information is not applicable or ""N/A""."','For each variable the dataset report should calculate the number of null values over the number of records. Explicit code values signifying that the information is not applicable are not considered null.','n/a',100.0,9,1),
-	 ('Is consistency of the dataset documented?','Is consistency of the dataset documented?','"Using a framework or tools to generate variable level information of consistency in a quality report.
+	 ('Consistency documentation','Is consistency of the dataset documented?','"Using a framework or tools to generate variable level information of consistency in a quality report.
 
 Consistency checks refer to variable level tests for:
 - plausible range of numeric values
 - codings are plausible in relation to one onother ""business logic"" tests
 - use of valid codes (semantic)"','For each variable the dataset report should contain consistency checks that refer to, amongst others: plausible range of numeric values; codings are plausible in relation to one another - "business logic" tests; use of valid codes (semantic).','n/a',100.0,10,1),
-	 ('Is precision of the dataset documented?','Is precision of the dataset documented?','"Using a framework or tools to generate variable level information of completeness in a quality report.
+	 ('Precision documentation','Is precision of the dataset documented?','"Using a framework or tools to generate variable level information of completeness in a quality report.
 
 Presicion refers for example to:
 - number of significant figures in numeric variables
@@ -65,7 +65,7 @@ Presicion refers for example to:
 
 A precondition is that the precision of variables is documented in the data dictionary."','"For each variable, the dataset report should contain computational checks including amongst others: granularity in numeric variables; number of categories or ranges for grouped numeric variables; number of categories/codes used for ordinal or nominal variables.
 "','n/a',100.0,11,1),
-	 ('Availability of a conformance report for the data model','Availability of a conformance report for the data model','"Using a framework or tools to generate variable level information of completeness in a quality report.
+	 ('Conformance report for the data model','Availability of a conformance report for the data model','"Using a framework or tools to generate variable level information of completeness in a quality report.
 
 Validity or conformance checks refer to variable level tests for:
 - data types (syntax)"','For each variable, the dataset report should contain computational checks for variable level syntax conformance (.i.e., conformance with expected syntax as per the data model)','n/a',100.0,12,1);
