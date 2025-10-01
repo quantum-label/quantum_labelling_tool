@@ -10,8 +10,40 @@
 
 <div class="card card-body alert alert-warning">
     <span>
-        The Maturity label and the DQ&U label are completely independent. Neither is calculated based on the other.
+        <a data-bs-toggle="modal" href="#" data-bs-target="#disclaimerModal">
+            The Maturity Label and the Data Quality & Utility Label are independent: the first assesses organisational maturity, the second assesses dataset quality and utility.
+        </a>
     </span>
+</div>
+
+<div class="modal fade" id="disclaimerModal" aria-labelledby="disclaimerModal" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Disclaimer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    The <i>Maturity Label</i> and the <i>Data Quality & Utility Label</i> are two distinct and independent concepts.
+                </p>
+                <ul>
+                    <li>
+                        The Maturity Label evaluates the <i>organisational maturity</i> of the data holder (e.g., governance, processes, infrastructure).
+                    </li>
+                    <li>
+                        The Data Quality & Utility Label evaluates the <i>quality and utility</i> of an individual dataset.
+                    </li>
+                </ul>
+                <p>
+                    Neither label is derived from the other — they complement each other by providing different perspectives: one at the organizational level, the other at the dataset level.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <h3 class="text-center mt-3 mb-3"> {{user.get_username}}'s Maturity Dashboard</h3>

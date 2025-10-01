@@ -10,8 +10,34 @@
 
 <div class="card card-body alert alert-warning">
     <span>
-        In the QUANTUM labelling tool, data catalogues and datasets are expected to be entered manually only during the piloting phase. In the future, this information will be automatically linked to existing metadata repositories and platforms across the EU.</b>
+        <a data-bs-toggle="modal"  href="#" data-bs-target="#disclaimerModal">
+            For piloting only: you need to create a catalogue and dataset here to mimic the EHDS structure. In the future, the label will link directly to your dataset’s existing metadata in its catalogue.
+        </a>
     </span>
+</div>
+
+<div class="modal fade" id="disclaimerModal" aria-labelledby="disclaimerModal" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Disclaimer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    In the current pilot version of the tool, you are asked to create a <i>Data Catalogue</i> and a <i>Dataset</i> before performing a quality and utility assessment. This setup is designed to mimic the structure of the European Health Data Space (EHDS),
+                    where datasets are always organised within national or institutional catalogues.
+                </p>
+                <p>
+                    For now, the catalogue you create here serves only as a placeholder to support the piloting process. In the future, the Data Quality and Utility Label will not require manual creation of a catalogue. Instead, it will be directly linked
+                    to the existing metadata description of your dataset in your institution’s or country’s catalogue, fully aligning with the EHDS structure.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <h3 class="text-center mt-3 mb-3"> {{user.get_username}}'s DQ&U Dashboard</h3>
