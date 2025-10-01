@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 
 from code.fdp.constants import FDP_DEVELOPMENT_URL
 from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
+from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
 
 from code.label.pdf.pdf_creator import PDFCreator
 from code.helpers.django import redirect_with_message, generate_assessment_stars, is_user_allowed_to_access
@@ -1387,6 +1388,29 @@ def download_assessment_pdf(request: HttpRequest) -> HttpResponse:
 
         response = HttpResponse(pdf_file, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="document.pdf"'
+
+        return response
+    else:
+        return redirect_with_message(
+            request,
+            '/dashboard',
+            f'Wrong access!'
+        )
+
+
+@login_required
+def download_organization_maturity_pdf(request: HttpRequest) -> HttpResponse:
+    if request.method == 'GET':
+        user = request.user
+        organization = UserOrganization.objects.filter(user=user).first().organization
+
+        pdf_creator = MaturityPDFCreator(
+            organization=organization
+        )
+        pdf_file = pdf_creator.generate_pdf()
+
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="maturity_report.pdf"'
 
         return response
     else:

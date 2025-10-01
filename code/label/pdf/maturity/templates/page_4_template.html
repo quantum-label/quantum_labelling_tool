@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/fontawesome.min.css" rel="stylesheet"/>
+    <link href="css/brands.min.css" rel="stylesheet"/>
+    <link href="css/solid.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Remove table borders */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        /* Add spacing between categories */
+        .category-row {
+            font-weight: bold;
+            font-size: 1.2em;
+            padding-top: 15px;
+            padding-bottom: 5px;
+        }
+
+        /* Adjust column padding */
+        td {
+            padding: 5px 10px;
+        }
+
+        /* Style headers with icons */
+        .table-header th {
+            font-weight: bold;
+            padding-bottom: 5px;
+        }
+
+        /* Optional: Add spacing between sections */
+        .section-divider {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Maturity assessment scores</h2>
+<hr>
+<p>
+    The table below presents the Maturity Assessment Scores, evaluating different dimensions of maturity based on the QUANTUM-specified framework within the European Health Data Space (EHDS). The score is on a scale from 0 to 50, indicating its level of compliance and completeness.
+</p>
+
+<table class="table">
+    <thead class="table-header">
+    <tr>
+        <th>Maturity dimension</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for dimension_name, dimension in maturity_assessment.items() %}
+    <tr>
+        <td>{{ dimension_name }}</td>
+        {% if dimension.value %}
+        <td>{{ dimension.value }}</td>
+        {% else %}
+        <td><i>Not selected</i></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td><b>{{ score }} / 50</b></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

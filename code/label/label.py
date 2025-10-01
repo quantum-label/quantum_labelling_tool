@@ -64,7 +64,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
         category_score = scores[category.name]['score']
         category_max_score = scores[category.name]['relevance']
         category_name = f'{category.name.replace(" ", "<br>")}<br>{category_score:.2f}/{category_max_score:.2f}'
-        category_percentage = f'{category.name.replace(" ", "<br>")}<br>{(category_score/category_max_score)*100:.0f}%'
+        category_percentage = f'{category.name.replace(" ", "<br>")}<br>{(category_score / category_max_score) * 100:.0f}%'
 
         elements.append(category_percentage)
         parents.append('QUANTUM')
@@ -87,7 +87,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
             max_score_str = f'{max_score:.2f}'
 
             dimension_name = f'{dimension.name.replace(" ", "<br>")}<br>{score_str}/{max_score_str}'
-            dimension_percentage = f'{dimension.name.replace(" ", "<br>")}<br>{(score/max_score)*100:.0f}%'
+            dimension_percentage = f'{dimension.name.replace(" ", "<br>")}<br>{(score / max_score) * 100:.0f}%'
             elements.append(dimension_percentage)
             parents.append(category_percentage)
             custom_hover_texts.append(dimension_name)
@@ -248,6 +248,7 @@ def compute_maturity_score(organization: Organization) -> tuple[dict, float]:
             'id': dimension.id,
             'definition': dimension.definition,
             'options': [],
+            'value_text': [],
             'value': None,
             'maximum_score': 5
         }
@@ -267,12 +268,28 @@ def compute_maturity_score(organization: Organization) -> tuple[dict, float]:
 
         if len(dimension_value) == 1:
             dimensions_dictionary[dimension.name]['value'] = dimension_value.first().maturity_dimension_level.value
+            dimensions_dictionary[dimension.name]['value_text'] = dimension_value.first().maturity_dimension_level.text
             matrix_score += dimension_value.first().maturity_dimension_level.value
 
     return dimensions_dictionary, matrix_score
 
 
-def plot_maturity(organization: Organization) -> str:
+def plot_maturity(organization: Organization, output_type: str = 'html') -> str:
+    """
+        Returns the plot of the Maturity label in graphical format
+
+        Params
+        ------
+        organization: Organization
+        output_type: str
+            - html -> for embedding div into website
+            - img -> for base64 encoded image
+
+        Returns
+        -------
+        The plot in the specified format or None if the output type is wrong
+    """
+
     elements = []
     parents = []
     values = []
@@ -369,13 +386,23 @@ def plot_maturity(organization: Organization) -> str:
         margin=dict(t=0, l=0, r=0, b=0)
     )
 
-    # Generate HTML div as a string
-    html_div = pio.to_html(
-        figure,
-        default_width='100%',
-        include_plotlyjs='cdn',
-        full_html=False,
-        config={'staticPlot': False}
-    )
+    if output_type == 'html':
+        # Generate HTML div as a string
+        html_div = pio.to_html(
+            figure,
+            default_width='100%',
+            include_plotlyjs='cdn',
+            full_html=False,
+            config={'staticPlot': False}
+        )
 
-    return html_div
+        return html_div
+    elif output_type == 'img':
+        # Convert figure to image in memory (PNG)
+        img_bytes = pio.to_image(figure, format="png")
+
+        # Encode image to base64
+        encoded_img = base64.b64encode(img_bytes).decode('utf-8')
+
+        # Return the base64 string
+        return f"data:image/png;base64,{encoded_img}"

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="css/fontawesome.min.css" rel="stylesheet"/>
+    <link href="css/brands.min.css" rel="stylesheet"/>
+    <link href="css/solid.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<style>
+    thead th {
+        border: none;
+        border-bottom: 1px solid black;
+    }
+    tbody td {
+        border: none;
+    }
+</style>
+<body>
+<br>
+<h1 class="text-center mt-3">QUANTUM<br>Maturity<br>Report</h1>
+<br>
+<br>
+<br>
+<br>
+<div class="text-center">
+    <img class="img-fluid" style="margin-right: 200px" src="{{ label }}"/>
+</div>
+<br>
+<br>
+<div class="text-end">
+    <p><b>{{ organization.name }}</b></p>
+    <p>{{ date }}</p>
+</div>
+
+<br>
+<div style="float: right">
+    <div class="small ">
+        Version {{ version }}
+    </div>
+</div>
+
+</body>
+</html>

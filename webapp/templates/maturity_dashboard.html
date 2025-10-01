@@ -144,6 +144,13 @@
             <div class="text-center mt-5">
                 <button type="submit" class="btn btn-success">Save changes</button>
             </div>
+
+            <div class="mt-5 text-center">
+                <a href="{% url 'organization_maturity_pdf' %}">
+                    <button type="button" class="btn btn-success">Download PDF</button>
+                </a>
+            </div>
+
         </form>
         <div class="text-center mt-4 mb-3">
             <a href="{% url 'dashboard' %}">
