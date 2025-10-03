@@ -1,85 +1,55 @@
 import os
-import pathlib
 from datetime import datetime
-from io import BytesIO
 
 from django.db.models import Sum
-from weasyprint import HTML
-from jinja2 import Environment, FileSystemLoader
 
 from code.helpers.django import generate_assessment_stars
 from code.label.label import plot_label, compute_scores
+from code.label.pdf.pdf_creator import PDFCreator
 from webapp.models import Dataset, Catalogue, DQAssessment, Organization, DQMetric, DQDimension, EHDSCategory, DQMetricValue, DQCategoricalMetricCategory
 
 
-class PDFCreator:
-    TEMPLATES_PATH = os.path.dirname(os.path.abspath(__file__)) + '/templates'
+class DQAssessmentPDFCreator(PDFCreator):
+    def __init__(self, dataset: Dataset, catalogue: Catalogue, assessment: DQAssessment, organization: Organization):
+        super().__init__()
 
-    def __init__(self):
-        self.html_files = self._get_html_files()
+        self.organization = organization
+        self.assessment = assessment
+        self.catalogue = catalogue
+        self.dataset = dataset
 
-    @staticmethod
-    def _get_html_files():
-        """Get all HTML files from the current directory."""
-        return [file for file in os.listdir(PDFCreator.TEMPLATES_PATH) if file.endswith('.html')]
+    def _get_templates_path(self):
+        return os.path.dirname(os.path.abspath(__file__)) + '/templates'
 
-    def generate_pdf(self, dataset: Dataset, catalogue: Catalogue, assessment: DQAssessment, organization: Organization) -> BytesIO:
-        """Generate a PDF with one page per HTML file."""
-        buffer = BytesIO()
-
-        if not self.html_files:
-            print("No HTML files found in the current directory.")
-            return buffer
-
-        pdf_pages = []
-
-        _, score = compute_scores(dataset)
+    def _generate_data(self):
+        """
+        Generate the data for a dq assessment
+        @return:
+        """
+        _, score = compute_scores(self.dataset)
         score = int(score)
 
-        results = self.__generate_results(dataset=dataset)
+        results = self.__generate_results()
 
         data = {
             'stars': generate_assessment_stars(score),
-            'label': plot_label(dataset, output_type='img'),
+            'label': plot_label(self.dataset, output_type='img'),
             'score': score,
-            'dataset': dataset,
-            'catalogue': catalogue,
-            'organization': organization,
+            'dataset': self.dataset,
+            'catalogue': self.catalogue,
+            'organization': self.organization,
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'version': '0.1',
             'results': results
         }
 
-        env = Environment(loader=FileSystemLoader(PDFCreator.TEMPLATES_PATH))
-        for html_file in sorted(self.html_files):
-            template = env.get_template(f'{html_file}')
-            filled_html = template.render(data)
+        return data
 
-            html = HTML(string=filled_html, base_url=PDFCreator.TEMPLATES_PATH)
-
-            pdf_pages.append(
-                html.render(
-                    data=data
-                )
-            )
-
-        # Combine all pages
-        combined_pdf = pdf_pages[0]
-        for pdf in pdf_pages[1:]:
-            combined_pdf.pages.extend(pdf.pages)
-
-        combined_pdf.write_pdf(buffer)
-
-        # Go to beginning of buffer
-        buffer.seek(0)
-
-        return buffer
-
-    def __generate_results(self, dataset: Dataset) -> list:
+    def __generate_results(self) -> list:
         # Compute the assessment table
         dimensions_total_relevance = DQDimension.objects.aggregate(Sum('relevance'))['relevance__sum']
         results = []
-        assessment = dataset.dq_assessment
+        assessment = self.dataset.dq_assessment
         ehds_categories = EHDSCategory.objects.all()
 
         for category_index, category in enumerate(ehds_categories, start=1):
