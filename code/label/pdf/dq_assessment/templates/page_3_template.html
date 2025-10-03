@@ -10,7 +10,7 @@
 </head>
 <body>
 <h2>
-    Data Quality and Utility assessment comments
+    Data Quality and Utility assessment issues
 </h2>
 <hr>
 
@@ -27,9 +27,9 @@
     <br>
     {% for metric in dimension.metrics %}
     {% if not metric.is_metric_ok %}
-    <small>{{ metric.metric_label }}: {{ metric.definition }}</small>
-    {% else %}
     <small class="bg-warning text-dark">{{ metric.metric_label }}: {{ metric.definition }}</small>
+    {% else %}
+    <small>{{ metric.metric_label }}: {{ metric.definition }}</small>
     {% endif %}
     <br>
     {% endfor %}

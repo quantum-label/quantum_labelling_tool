@@ -20,7 +20,7 @@
 
 <small class="mt-3">
     {% for dimension_name, dimension in maturity_assessment.items() %}
-    <small><b>{{ dimension_name }}</b></small>
+    <small><b>{{ loop.index }}. {{ dimension_name }}</b></small>
     <br>
     {% if dimension.value %}
     <small>{{ dimension.value_text }} ({{ dimension.value }} / 5)</small>
