@@ -63,7 +63,7 @@
     <tbody>
     {% for dimension_name, dimension in maturity_assessment.items() %}
     <tr>
-        <td>{{ dimension_name }}</td>
+        <td>{{ loop.index }}. {{ dimension_name }}</td>
         {% if dimension.value %}
         <td>{{ dimension.value }}</td>
         {% else %}
