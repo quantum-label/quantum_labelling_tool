@@ -199,9 +199,33 @@
                                     <p> The Total Score is a weighted average that measures the dataset's quality and utility. Each dimension's score is based on its importance (compared to the other dimensions) multiplied by the performance of its
                                         metrics. The
                                         dimension score is normalized by the total weight of all dimensions and then summed with all the other dimension scores.</p><br>
-                                    <p> \[\text{Total Score} =\frac{\sum_{i=1}^{n=12} \text{Dimension}_i^{\text{weight}} \times \left[\sum_{j=1}^{n=2} \left(\text{metric}_j^{\text{weight}} \times \text{metric value}_j \right) \right]}{\text{Total
-                                        Weight of
-                                        Dimensions}} \times 100\]</p>
+
+                                    <p>
+                                        \[
+                                        \text{Total Score} = \sum_{i=1}^{D} \left( \sum_{j=1}^{M_i} \frac{o_{ij}}{k_{ij} - 1} \cdot \frac{w_{ij}}{100} \right) \cdot \frac{W_i}{100}
+                                        \]
+                                    </p>
+
+                                    <p class="text-start"><strong>Where:</strong></p>
+                                    <ul class="text-start">
+                                        <li><code>D</code>: number of dimensions</li>
+                                        <li><code>M<sub>i</sub></code>= number of metrics in dimension <code>i</code></li>
+                                        <li><code>o<sub>ij</sub></code>= chosen option for metric <code>j</code> in dimension <code>i</code></li>
+                                        <li><code>k<sub>ij</sub></code>= number of options for metric <code>j</code> in dimension <code>i</code></li>
+                                        <li><code>w<sub>ij</sub></code>= weight of metric <code>j</code> in dimension <code>i</code>(percentage)</li>
+                                        <li><code>W<sub>i</sub></code>= weight of dimension <code>i</code> (percentage)</li>
+                                    </ul>
+                                    <p class="text-start"><strong>Normalization Guarantee:</strong></p>
+                                    <p class="text-start">
+                                        \[
+                                        \text{If } \sum_{i=1}^{D} W_i = 100 \text{ and for each } i, \sum_{j=1}^{M_i} w_{ij} = 100,\text{ then: }
+                                        \]
+                                    </p>
+                                    <p>
+                                        \[
+                                        0 \leq \text{Total Score} \leq 1
+                                        \]
+                                    </p>
                                 </div>
                             </div>
                             <div class="modal-footer">
