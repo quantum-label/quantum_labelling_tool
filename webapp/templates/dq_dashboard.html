@@ -10,7 +10,7 @@
 
 <div class="card card-body alert alert-warning">
     <span>
-        <a data-bs-toggle="modal"  href="#" data-bs-target="#disclaimerModal">
+        <a data-bs-toggle="modal" href="#" data-bs-target="#disclaimerModal">
             For piloting only: you need to create a catalogue and dataset here to mimic the EHDS structure. In the future, the label will link directly to your dataset’s existing metadata in its catalogue.
         </a>
     </span>
@@ -25,7 +25,8 @@
             </div>
             <div class="modal-body">
                 <p>
-                    In the current pilot version of the tool, you are asked to create a <i>Data Catalogue</i> and a <i>Dataset</i> before performing a quality and utility assessment. This setup is designed to mimic the structure of the European Health Data Space (EHDS),
+                    In the current pilot version of the tool, you are asked to create a <i>Data Catalogue</i> and a <i>Dataset</i> before performing a quality and utility assessment. This setup is designed to mimic the structure of the European Health Data
+                    Space (EHDS),
                     where datasets are always organised within national or institutional catalogues.
                 </p>
                 <p>
@@ -140,7 +141,7 @@
             <hr>
         </div>
         <div class="col-sm-12 mb-5">
-            <div class="table-responsive">
+            <div style="overflow: auto;">
                 <table class="table text-center">
                     <thead>
                     <tr>
@@ -199,7 +200,7 @@
     </div>
     <div class="row mt-1">
         <div class="col-sm-12 mb-5" style="height: auto;"> <!-- his creates a Bootstrap column that spans 12 units on small devices-->
-            <div class="table-responsive mb-3">
+            <div class="mb-3" style="overflow: auto;">
                 <!-- class in Bootstrap ensures that your table remains scrollable on smaller devices. When applied to a <div>, this class makes the table inside the <div> responsive. The table will automatically adjust and provide HORIZONTAL scrolling on smaller screens-->
                 <table class="table">
                     <thead>
@@ -350,9 +351,11 @@
                     }
                 };
             </script>
-
         </div>
     </div>
 </div>
-<div class="text-center" style=" margin-top:10px; margin-bottom: 20px;"><i>Need help? Visit the Help Center or create a ticket by <a href="https://quantumproject.zohodesk.eu/portal/en/home" target="_blank"> clicking here</a></div></i>
+<div class="text-center" style=" margin-top:10px; margin-bottom: 20px;">
+    <i>Need help? Visit the Help Center or create a ticket by <a href="https://quantumproject.zohodesk.eu/portal/en/home" target="_blank"> clicking here</a></i>
+</div>
+
 {% endblock %}
