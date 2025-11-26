@@ -1,0 +1,40 @@
+services:
+  quantumdatabase:
+    image: mariadb:10.6.14
+    volumes:
+      - quantum_db_data:/var/lib/mysql
+      - ./docker/init:/docker-entrypoint-initdb.d/:ro
+    restart: always
+    expose:
+      - 3306
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      - MYSQL_ROOT_PASSWORD=${QUANTUM_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${QUANTUM_DATABASE}
+    command: --bind-address=0.0.0.0
+  quantumtoolwebapp:
+    container_name: quantumtoolwebapp
+    build: .
+    environment:
+      - QUANTUM_DATABASE=${QUANTUM_DATABASE}
+      - QUANTUM_ROOT_PASSWORD=${QUANTUM_ROOT_PASSWORD}
+      - QUANTUM_DATABASE_HOST=quantumdatabase
+      - QUANTUM_DATABASE_PORT=3306
+      - DJANGO_DEBUG=0
+      - DJANGO_WEB_URL=${DJANGO_WEB_URL}
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@quantum.local
+      - DJANGO_SUPERUSER_PASSWORD=admin123
+    ports:
+      - 8000:8000
+    depends_on:
+      quantumdatabase:
+        condition: service_healthy
+
+volumes:
+  quantum_db_data:

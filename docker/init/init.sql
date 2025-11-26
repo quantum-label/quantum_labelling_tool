@@ -1,3 +1,6 @@
+-- CREATE DATABASE /*IF NOT EXISTS*/ `test`;
+-- USE `test`;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 INSERT INTO webapp_ehdscategory (name) VALUES
