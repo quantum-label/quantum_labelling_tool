@@ -24,18 +24,79 @@ python manage.py migrate --noinput
 echo "Setting up superuser..."
 python manage.py shell -c "
 from django.contrib.auth.models import User
+from webapp.models import Organization, UserOrganization, Catalogue, Dataset, DQAssessment
 import os
 
 admin_username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
 admin_email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@quantum.local')
 admin_password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123')
 
+# Create superuser
 if not User.objects.filter(username=admin_username).exists():
     User.objects.create_superuser(admin_username, admin_email, admin_password)
-    print(f'✅ Superuser \"{admin_username}\" created successfully')
+    print(f'Superuser \"{admin_username}\" created successfully')
 else:
-    print(f'ℹ️  Superuser \"{admin_username}\" already exists')
-" 2>/dev/null || echo "Error: could not create/check superuser"
+    print(f'Superuser \"{admin_username}\" already exists')
+
+# Create default organization
+org, created = Organization.objects.get_or_create(name='Default Organization')
+if created:
+    print('Default organization created')
+else:
+    print('Default organization already exists')
+
+# Associate admin with organization
+user = User.objects.get(username=admin_username)
+user_org, created = UserOrganization.objects.get_or_create(
+    user=user,
+    organization=org
+)
+if created:
+    print(f'Admin user linked to organization')
+else:
+    print(f'Admin user already linked to organization')
+
+# Create demo catalogue
+demo_catalogue, created = Catalogue.objects.get_or_create(
+    title='QUANTUM Demo Health Data Catalogue',
+    defaults={
+        'version': 1.0,
+        'part_of': 'European Health Data Space (EHDS) Demo Environment',
+        'fdp_id': 'demo-catalogue-001',
+        'user': user
+    }
+)
+if created:
+    print('Demo catalogue created successfully')
+else:
+    print('Demo catalogue already exists')
+
+# Create demo dataset with assessment
+demo_assessment, created = DQAssessment.objects.get_or_create(
+    defaults={
+        'status': 'O',  # Ongoing
+    }
+)
+if created:
+    print('Demo assessment created')
+
+demo_dataset, created = Dataset.objects.get_or_create(
+    name='Sample European Health Dataset',
+    defaults={
+        'URI': 'https://demo.quantumproject.eu/datasets/sample-health-data-001',
+        'description': 'A demonstration dataset showcasing health data quality assessment capabilities within the QUANTUM framework. This synthetic dataset contains anonymized health records designed to illustrate the data quality labeling process and compliance with HealthDCAT-AP standards.',
+        'version': 1.0,
+        'organization': org,
+        'catalogue': demo_catalogue,
+        'dq_assessment': demo_assessment,
+        'fdp_id': 'demo-dataset-001'
+    }
+)
+if created:
+    print('Demo dataset created successfully')
+else:
+    print('Demo dataset already exists')
+" 2>/dev/null || echo "Could not create/check superuser"
 
 # Collect static files
 echo "Collecting static files..."
