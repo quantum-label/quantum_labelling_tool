@@ -78,9 +78,13 @@ if load_demo_data:
         print('Demo catalogue already exists')
 
     # Create demo dataset with assessment
+    from datetime import datetime
+    
     demo_assessment, created = DQAssessment.objects.get_or_create(
+        fdp_id='demo-assessment-001',
         defaults={
             'status': 'O',  # Ongoing
+            'start_date': datetime.now(),
         }
     )
     if created:
@@ -118,8 +122,10 @@ if load_demo_data:
 
     # Create second demo dataset with different characteristics
     clinical_assessment, created = DQAssessment.objects.get_or_create(
+        fdp_id='clinical-assessment-002',
         defaults={
             'status': 'V',  # Validated
+            'start_date': datetime.now(),
         }
     )
 
@@ -140,8 +146,10 @@ if load_demo_data:
 
     # Create third dataset showing different maturity levels
     registry_assessment, created = DQAssessment.objects.get_or_create(
+        fdp_id='registry-assessment-003',
         defaults={
             'status': 'O',  # Ongoing
+            'start_date': datetime.now(),
         }
     )
 
@@ -165,7 +173,7 @@ else:
     print('Demo data loading disabled via QUANTUM_LOAD_DEMO_DATA environment variable')
     print('Set QUANTUM_LOAD_DEMO_DATA=1 to enable demo data loading')
 
-" 2>/dev/null || echo "Could not create/check superuser"
+"
 
 # Collect static files
 echo "Collecting static files..."
