@@ -161,7 +161,6 @@ if load_demo_data:
         print('Registry dataset created successfully')
 
     print('Demo data setup completed!')
-    print('- Ready for complete workflow testing')
 else:
     print('Demo data loading disabled via QUANTUM_LOAD_DEMO_DATA environment variable')
     print('Set QUANTUM_LOAD_DEMO_DATA=1 to enable demo data loading')
