@@ -57,58 +57,64 @@ python manage.py runserver 0.0.0.0:8000
 
 ## Dockerizing
 
-- Download the repository. When unzipped, the folder will be named "quantum_labelling_tool"
-- For Dockerizing create a folder called "QUANTUM" where needed
-- Inside QUANTUM create the folder "online_quantum_tool", which will contain the django web app.
-- From "quantum_labelling_tool" copy the following files and folders to the "QUANTUM/online_quantum_tool" folder:
-  - code
-  - quantum
-  - static
-  - staticfiles
-  - templates
-  - webapp
-  - manage.py
-- Copy the content of "quantum_labelling_tool/docker" inside "QUANTUM" (keep in mind that it contains an .env file, which may be hidden)
-- If the web app is meant to be executed under a sub path (e.g. myurl.com/tool-subpath/) it is required to change on "quantum/settings.py" the "SUB_PATH_NAME" to the desired subpath (e.g. /tool-subpath)
-- In the "QUANTUM" folder execute by bash:
+### Quick Start (Recommended)
+
+The easiest way to run QUANTUM with Docker is using our automated setup:
+
+**Prerequisites:**
+- Docker and Docker Compose installed
+
+**One-command setup:**
 ```bash
-docker build -t quantum_online_tool .
+git clone https://github.com/quantum-label/quantum_labelling_tool.git
+cd quantum_labelling_tool
+docker-compose up --build
 ```
-- When the image is built execute the docker-compose command inside the "QUANTUM" folder:
+
+**Access the application:**
+- Web App: [http://localhost:8000](http://localhost:8000)
+- Admin Panel: [http://localhost:8000/admin](http://localhost:8000/admin) 
+- Default admin credentials: `admin` / `admin123`
+
+### What Happens Automatically
+
+Our automated Docker setup handles everything:
+
+1. **Database Initialization**: MariaDB starts with initial schema and sample data
+2. **Django Migrations**: Applied automatically to update database schema
+3. **Superuser Creation**: Admin user created with credentials above
+4. **Static Files**: CSS/JS files collected automatically
+5. **Application Startup**: Web server starts and becomes ready
+
+### Environment Configuration
+
+The setup uses environment variables from `.env` file:
+```env
+QUANTUM_DATABASE_LOCATION=./database
+QUANTUM_DATABASE=quantum
+QUANTUM_ROOT_PASSWORD=root
+DJANGO_WEB_URL=http://localhost
+```
+
+### Useful Commands
+
 ```bash
-docker-compose up
-```
-- Access the web app container through the following command:
-```
+# Start in background
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Reset everything (removes all data)
+docker-compose down -v
+
+# Access containers
 docker exec -it quantumtoolwebapp bash
+docker exec -it quantumdatabase bash
 ```
-- Fill the database with the initial information:
-```
-python manage.py migrate
-```
-- Create a superuser to play with (root):
-```
-python manage.py createsuperuser
-```
-
-- Exit from the container
-```
-exit
-```
-
-- Access the database container:
-```
-docker exec -it quantumtooldatabase bash
-```
-
-- Execute the following commands to add information to the database
-```
-mysql -u root -p
-use quantum;
-source /docker-entrypoint-initdb.d/init.sql;
-```
-
-- See "Usage" sections
 
 ## Technology Stack
 
