@@ -71,6 +71,14 @@ cd quantum_labelling_tool
 docker-compose up --build
 ```
 
+**Fill the initial database information:**
+```bash
+docker exec -it quantumtooldatabase bash
+mysql -u root -p
+use quantum;
+source /docker-entrypoint-initdb.d/init.sql;
+```
+
 **Access the application:**
 - Web App: [http://localhost:8000](http://localhost:8000)
 - Admin Panel: [http://localhost:8000/admin](http://localhost:8000/admin) 
