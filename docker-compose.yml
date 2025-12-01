@@ -1,5 +1,6 @@
 services:
   quantumdatabase:
+    container_name: quantumtooldatabase
     image: mariadb:10.6.14
     volumes:
       - quantum_db_data:/var/lib/mysql
