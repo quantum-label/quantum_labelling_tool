@@ -63,8 +63,8 @@ The easiest way to run QUANTUM with Docker is using our automated setup:
 
 **Prerequisites:**
 - Docker and Docker Compose installed
-- This setup has been implemented and tested on Linux and macOS systems. Docker deployment on Windows requires additional configuration steps
-
+- This setup has been implemented and tested on Linux and macOS systems. Docker deployment on Windows requires additional configuration steps not provided in this guide
+  
 **One-command setup:**
 ```bash
 git clone https://github.com/quantum-label/quantum_labelling_tool.git
