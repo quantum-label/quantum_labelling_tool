@@ -63,6 +63,7 @@ The easiest way to run QUANTUM with Docker is using our automated setup:
 
 **Prerequisites:**
 - Docker and Docker Compose installed
+- This setup has been implemented and tested on Linux and macOS systems. Docker deployment on Windows may involve variations in specific configuration steps 
 
 **One-command setup:**
 ```bash
