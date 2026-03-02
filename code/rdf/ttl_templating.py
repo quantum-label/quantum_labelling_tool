@@ -1,6 +1,5 @@
 import os
 
-from code.fdp.constants import FDP_DEVELOPMENT_URL
 from code.helpers.django import generate_assessment_stars, compute_amount_of_stars
 from code.label.label import compute_scores
 from webapp.models import Dataset, Catalogue, DQMetricValue, DQMetric, DQDimension, EHDSCategory, DQAssessment
