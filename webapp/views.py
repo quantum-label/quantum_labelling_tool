@@ -515,6 +515,11 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
         dataset_catalogue_id = request.POST.get('dataset_catalogue', None)
         dataset_URI = request.POST.get('dataset_URI', None)
 
+        try:
+            dataset_version = float(request.POST.get('dataset_version', 1))
+        except (TypeError, ValueError):
+            dataset_version = 1.0
+
         organization = UserOrganization.objects.filter(user=user).first().organization
         catalogue = Catalogue.objects.filter(id=dataset_catalogue_id).first()
 
@@ -539,7 +544,7 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
         # Check if dataset exists with same name and version
         exists_duplicated_dataset = Dataset.objects.filter(
             name=dataset_name,
-            version=1,
+            version=dataset_version,
             organization=organization,
             catalogue=catalogue
         ).exists()
@@ -558,7 +563,7 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
                 URI=dataset_URI,
                 name=dataset_name,
                 description=dataset_description,
-                version=1,
+                version=dataset_version,
                 organization=organization,
                 catalogue=catalogue
             )
@@ -645,6 +650,11 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
         dataset_description = request.POST.get('dataset_description', None)
         dataset_URI = request.POST.get('dataset_URI', None)
 
+        try:
+            dataset_version = float(request.POST.get('dataset_version', 1))
+        except (TypeError, ValueError):
+            dataset_version = 1.0
+
         can_access, redirect_request = is_user_allowed_to_access(
             request,
             user,
@@ -675,9 +685,31 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
                     'Dataset id not existing.'
                 )
 
+            user_organization = UserOrganization.objects.filter(user=user).first()
+            organization = user_organization.organization
+
+            catalogue = Catalogue.objects.get(dataset=dataset)
+
+            # Check if dataset exists with same name and version
+            exists_duplicated_dataset = Dataset.objects.filter(
+                name=dataset_name,
+                version=dataset_version,
+                organization=organization,
+                catalogue=catalogue
+            ).exists()
+
+            # If the dataset is duplicated we make a redirect with a message
+            if exists_duplicated_dataset:
+                return redirect_with_message(
+                    request,
+                    '/dashboard',
+                    'A dataset with that name, catalogue and version already exists.'
+                )
+
             dataset.name = dataset_name
             dataset.description = dataset_description
             dataset.URI = dataset_URI
+            dataset.version = dataset_version
 
             dataset.save()
 
