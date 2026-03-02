@@ -90,3 +90,19 @@ ec-grey-background {
     border-radius: 4px; /* Circle shape */
     margin-left: 10px;
 }
+
+.page-item.active .page-link {
+    background-color: #cfd4da !important;   /* gris un poco más oscuro */
+    border-color: #cfd4da !important;
+    color: #212529 !important;
+}
+
+.page-link {
+    color: #6c757d;
+}
+
+.page-link:hover {
+    background-color: #e2e6ea;
+    border-color: #d6d8db;
+    color: #495057;
+}

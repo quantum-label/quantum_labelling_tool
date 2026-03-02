@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 
@@ -8,16 +9,14 @@ from django.core.validators import URLValidator
 from django.db.models import Sum
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from code.fdp.constants import FDP_DEVELOPMENT_URL
-from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
-from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
-
-from code.label.pdf.pdf_creator import PDFCreator
 from code.helpers.django import redirect_with_message, generate_assessment_stars, is_user_allowed_to_access
 from code.label.label import plot_label, compute_scores, compute_maturity_score, plot_maturity
+from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
+from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
 from code.rdf.ttl_templating import generate_ttl_file
-
 from webapp.models import Dataset, DQAssessment, DQMetric, DQMetricValue, EHDSCategory, DQDimension, \
     DQCategoricalMetricCategory, UserOrganization, Catalogue, MaturityDimension, MaturityDimensionLevel, \
     MaturityDimensionValue
@@ -166,30 +165,136 @@ def user_dashboard_view(request: HttpRequest) -> HttpResponse:
 
             if dq_metric_value_amount > 0:
                 assessment_text = f'Edit'
-                # assessment_text = f'Edit ({dq_metric_value_amount}/{metrics})'
+
+            is_reporter = (request.user.username == dataset.catalogue.user.username)
 
             dataset_list.append({
                 'id': dataset.id,
                 'user': dataset.catalogue.user.username,
                 'catalogue': dataset.catalogue.title,
                 'organization': user_organization.organization.name,
-                'name': dataset.name,
+                "name": f"""
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_{dataset.id}">
+                        {dataset.name}
+                    </a>
+            
+                    <div class="modal fade" id="modal_{dataset.id}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5">Dataset information</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+            
+                                <div class="modal-body">
+                                    <p><b>Name:</b><br>{dataset.name}</p>
+                                    <p><b>Version:</b><br>{dataset.version}</p>
+                                    <p><b>Data controller:</b><br>{user_organization.organization.name}</p>
+                                    <p><b>Reporter:</b><br>{dataset.catalogue.user.username}</p>
+                                    <p><b>Description:</b><br>{dataset.description}</p>
+                                </div>
+            
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                """,
                 'description': dataset.description,
                 'version': dataset.version,
-                'assessment_percentage': assessment_text,
-                'stars': stars,
+                'assessment_percentage': f"""
+                    <a href="{reverse('dataset_assessment')}?id={dataset.id}">
+                        <button class="btn btn-secondary">
+                            {assessment_text}
+                        </button>
+                    </a>
+                """,
+                'stars': f"""
+                    <a href="{reverse('dataset_label')}?id={dataset.id}">
+                        <button class="btn {stars_class}">
+                            {stars}
+                        </button>
+                    </a>
+                """,
+                'download': f"""
+                    <a href="{reverse('dataset_assessment_rdf')}?id={dataset.id}">
+                        <button class="btn btn-secondary">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                    </a>
+                """,
+                'actions': f"""
+                    <button type="button" 
+                            class="btn btn-secondary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#actionsModal_{dataset.id}">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                
+                    <!-- Modal -->
+                    <div class="modal fade" id="actionsModal_{dataset.id}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        Actions for {dataset.name}
+                                    </h5>
+                                    <button type="button" 
+                                            class="btn-close" 
+                                            data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <a href="{reverse('dataset_modify')}?id={dataset.id}" 
+                                       class="btn btn-secondary m-2">
+                                        Modify
+                                    </a>
+                                    <a href="{reverse('dataset_delete')}?id={dataset.id}" 
+                                       class="btn btn-danger m-2"
+                                       onclick="return confirmDeletion()">
+                                        Delete
+                                    </a>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" 
+                                            class="btn btn-secondary" 
+                                            data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                """ if is_reporter else '<small class="text-secondary">Not reporter</small>',
                 'score': score,
                 'stars_class': stars_class
             })
 
         catalogues = Catalogue.objects.filter(user=user)
+        catalogues_list = []
+
+        for catalogue in catalogues:
+            catalogues_list.append({
+                'title': catalogue.title,
+                'version': catalogue.version,
+                'modify': f"""<a href="{reverse('catalogue_modify')}?id={catalogue.id}">
+                        <button class="btn btn-secondary">
+                            Modify
+                        </button>
+                    </a>""",
+                'delete': f"""<a class="dropdown-item" href="{reverse('catalogue_delete')}?id={catalogue.id}" onclick="confirmDeletion()">
+                        <button class="btn btn-danger">
+                            Delete
+                        </button>
+                    </a>""",
+            })
 
         return render(
             request,
             'dq_dashboard.html',
             context={
-                'datasets': dataset_list,
-                'catalogues': catalogues,
+                'datasets': json.dumps(dataset_list),
+                'catalogues': json.dumps(catalogues_list),
                 'organization': user_organization.organization.name
             }
         )
