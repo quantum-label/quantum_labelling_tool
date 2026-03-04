@@ -9,7 +9,6 @@ from django.db.models import Sum
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
-from code.fdp.constants import FDP_DEVELOPMENT_URL
 from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
 from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
 
@@ -458,20 +457,6 @@ def user_dataset_assessment_view(request: HttpRequest) -> HttpResponse:
             for change in changes:
                 changes_message += f'<br> - {change}'
 
-        # TODO: Update the FDP metric values
-        ##############
-        # Assessment
-        # dataset = assessment.dataset
-        #
-        # ttl = fill_full_template(
-        #     dataset=dataset,
-        #     username=request.user.username
-        # )
-        #
-        # dataset.rdf = ttl
-        # dataset.save()
-        ##############
-
         return redirect_with_message(
             request,
             f'/dataset/assessment?id={dataset_id}',
@@ -576,11 +561,6 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
             dataset.dq_assessment = dq_assessment
             # The dataset is truly created when the save operation is made
             dataset.save()
-
-            # TODO: Create the dataset and assessment on the FDP
-            ##############
-
-            ##############
 
             return redirect_with_message(
                 request,
@@ -713,11 +693,6 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
 
             dataset.save()
 
-            # TODO: Create the catalogue and assessment on the FDP
-            ##############
-
-            ##############
-
             return redirect_with_message(
                 request,
                 '/dashboard',
@@ -833,43 +808,9 @@ def catalogue_create_view(request: HttpRequest) -> HttpResponse:
                 title=catalogue_title,
                 version=catalogue_version,
                 user=user,
-                part_of=os.getenv('FDP_URL', FDP_DEVELOPMENT_URL),
+                part_of=os.getenv('FDP_URL', ''),
             )
             catalogue.save()
-            # TODO: Create the catalogue and assessment on the FDP
-            ##############
-            # # Template catalogue
-            # catalogue_template = template_catalogue(
-            #     catalogue=catalogue,
-            #     username=user.username
-            # )
-            # # Create catalogue
-            # catalogue_id = create_catalogue(
-            #     rdf_content=catalogue_template
-            # )
-            # if catalogue_id:
-            #     # Publish catalogue
-            #     status_code, _ = publish_catalogue(
-            #         catalogue_id=catalogue_id
-            #     )
-            #     print(status_code)
-            #     # Store on model
-            #     if status_code == 200:
-            #         catalogue.fdp_id = catalogue_id
-            #         catalogue.save()
-            #     else:
-            #         return redirect_with_message(
-            #             request,
-            #             '/dashboard',
-            #             f'Catalogue "{catalogue.title}" could not be created. Check Fair Data Point connection!'
-            #         )
-            # else:
-            #     return redirect_with_message(
-            #         request,
-            #         '/dashboard',
-            #         f'Catalogue "{catalogue.title}" could not be created. Check Fair Data Point connection!'
-            #     )
-            ##############
 
             return redirect_with_message(
                 request,
@@ -967,11 +908,6 @@ def catalogue_modify_view(request: HttpRequest) -> HttpResponse:
 
             # The catalogue is truly created when the save operation is made
             catalogue.save()
-
-            # TODO: Update the catalogue and assessment on the FDP
-            ##############
-
-            ##############
 
             return redirect_with_message(
                 request,
