@@ -74,7 +74,15 @@
                     <input type="text" class="form-control" name="dataset_name" maxlength="256" id="dataset_name" required>
                     <small id="dataset_name_count" class="form-text text-muted">256 characters left</small>
                 </div>
-
+                <div class="mb-3">
+                    <label class="form-label">Dataset Version
+                        <span class="text-danger">*</span>
+                        <span class="question-mark" data-bs-toggle="tooltip" title="This is the version number of the dataset being created.
+                        Choose a version for the dataset." style="cursor: pointer;">?</span>
+                    </label>
+                    <input type="number" step="0.01" class="form-control" name="dataset_version" required>
+                    <small class="form-text text-muted">Insert numbers</small>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">
                         Dataset Description
@@ -84,10 +92,7 @@
                     <textarea class="form-control" name="dataset_description" rows="3" required></textarea>
                     <small id="dataset_description_count" class="form-text text-muted">No characters limits</small>
                 </div>
-                <!--                <div class="mb-3">-->
-                <!--                    <label class="form-label">Version</label>-->
-                <!--                    <input type="number" class="form-control" name="dataset_version" required>-->
-                <!--                </div>-->
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-success">Create</button>
                 </div>
