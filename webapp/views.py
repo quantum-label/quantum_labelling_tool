@@ -11,7 +11,10 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from code.fdp.constants import FDP_DEVELOPMENT_URL
+from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
+from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
+
+from code.label.pdf.pdf_creator import PDFCreator
 from code.helpers.django import redirect_with_message, generate_assessment_stars, is_user_allowed_to_access
 from code.label.label import plot_label, compute_scores, compute_maturity_score, plot_maturity
 from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
@@ -563,20 +566,6 @@ def user_dataset_assessment_view(request: HttpRequest) -> HttpResponse:
             for change in changes:
                 changes_message += f'<br> - {change}'
 
-        # TODO: Update the FDP metric values
-        ##############
-        # Assessment
-        # dataset = assessment.dataset
-        #
-        # ttl = fill_full_template(
-        #     dataset=dataset,
-        #     username=request.user.username
-        # )
-        #
-        # dataset.rdf = ttl
-        # dataset.save()
-        ##############
-
         return redirect_with_message(
             request,
             f'/dataset/assessment?id={dataset_id}',
@@ -620,6 +609,11 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
         dataset_catalogue_id = request.POST.get('dataset_catalogue', None)
         dataset_URI = request.POST.get('dataset_URI', None)
 
+        try:
+            dataset_version = float(request.POST.get('dataset_version', 1))
+        except (TypeError, ValueError):
+            dataset_version = 1.0
+
         organization = UserOrganization.objects.filter(user=user).first().organization
         catalogue = Catalogue.objects.filter(id=dataset_catalogue_id).first()
 
@@ -644,7 +638,7 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
         # Check if dataset exists with same name and version
         exists_duplicated_dataset = Dataset.objects.filter(
             name=dataset_name,
-            version=1,
+            version=dataset_version,
             organization=organization,
             catalogue=catalogue
         ).exists()
@@ -663,7 +657,7 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
                 URI=dataset_URI,
                 name=dataset_name,
                 description=dataset_description,
-                version=1,
+                version=dataset_version,
                 organization=organization,
                 catalogue=catalogue
             )
@@ -676,11 +670,6 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
             dataset.dq_assessment = dq_assessment
             # The dataset is truly created when the save operation is made
             dataset.save()
-
-            # TODO: Create the dataset and assessment on the FDP
-            ##############
-
-            ##############
 
             return redirect_with_message(
                 request,
@@ -750,6 +739,11 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
         dataset_description = request.POST.get('dataset_description', None)
         dataset_URI = request.POST.get('dataset_URI', None)
 
+        try:
+            dataset_version = float(request.POST.get('dataset_version', 1))
+        except (TypeError, ValueError):
+            dataset_version = 1.0
+
         can_access, redirect_request = is_user_allowed_to_access(
             request,
             user,
@@ -780,16 +774,33 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
                     'Dataset id not existing.'
                 )
 
+            user_organization = UserOrganization.objects.filter(user=user).first()
+            organization = user_organization.organization
+
+            catalogue = Catalogue.objects.get(dataset=dataset)
+
+            # Check if dataset exists with same name and version
+            exists_duplicated_dataset = Dataset.objects.filter(
+                name=dataset_name,
+                version=dataset_version,
+                organization=organization,
+                catalogue=catalogue
+            ).exists()
+
+            # If the dataset is duplicated we make a redirect with a message
+            if exists_duplicated_dataset:
+                return redirect_with_message(
+                    request,
+                    '/dashboard',
+                    'A dataset with that name, catalogue and version already exists.'
+                )
+
             dataset.name = dataset_name
             dataset.description = dataset_description
             dataset.URI = dataset_URI
+            dataset.version = dataset_version
 
             dataset.save()
-
-            # TODO: Create the catalogue and assessment on the FDP
-            ##############
-
-            ##############
 
             return redirect_with_message(
                 request,
@@ -906,43 +917,9 @@ def catalogue_create_view(request: HttpRequest) -> HttpResponse:
                 title=catalogue_title,
                 version=catalogue_version,
                 user=user,
-                part_of=os.getenv('FDP_URL', FDP_DEVELOPMENT_URL),
+                part_of=os.getenv('FDP_URL', ''),
             )
             catalogue.save()
-            # TODO: Create the catalogue and assessment on the FDP
-            ##############
-            # # Template catalogue
-            # catalogue_template = template_catalogue(
-            #     catalogue=catalogue,
-            #     username=user.username
-            # )
-            # # Create catalogue
-            # catalogue_id = create_catalogue(
-            #     rdf_content=catalogue_template
-            # )
-            # if catalogue_id:
-            #     # Publish catalogue
-            #     status_code, _ = publish_catalogue(
-            #         catalogue_id=catalogue_id
-            #     )
-            #     print(status_code)
-            #     # Store on model
-            #     if status_code == 200:
-            #         catalogue.fdp_id = catalogue_id
-            #         catalogue.save()
-            #     else:
-            #         return redirect_with_message(
-            #             request,
-            #             '/dashboard',
-            #             f'Catalogue "{catalogue.title}" could not be created. Check Fair Data Point connection!'
-            #         )
-            # else:
-            #     return redirect_with_message(
-            #         request,
-            #         '/dashboard',
-            #         f'Catalogue "{catalogue.title}" could not be created. Check Fair Data Point connection!'
-            #     )
-            ##############
 
             return redirect_with_message(
                 request,
@@ -1040,11 +1017,6 @@ def catalogue_modify_view(request: HttpRequest) -> HttpResponse:
 
             # The catalogue is truly created when the save operation is made
             catalogue.save()
-
-            # TODO: Update the catalogue and assessment on the FDP
-            ##############
-
-            ##############
 
             return redirect_with_message(
                 request,
