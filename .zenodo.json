@@ -5,43 +5,47 @@
     {
       "orcid": "0000-0003-1843-9209",
       "affiliation": "Universitat Politècnica de València",
-      "name": "Sánchez-García, Ángel"
+      "name": "Sánchez-García, Ángel",
+      "role": "ProjectMember"
     },
     {
       "orcid": "0009-0000-4373-0095",
       "affiliation": "Sciensano",
-      "name": "Proietti Mercuri, Claudio"
+      "name": "Proietti Mercuri, Claudio",
+      "role": "WorkPackageLeader"
     },
     {
       "orcid": "0000-0002-8064-2569",
       "affiliation": "Sciensano",
-      "name": "Schutte, Nienke"
+      "name": "Schutte, Nienke",
+      "role": "ProjectMember"
     },
     {
       "orcid": "0000-0003-2678-8249",
       "affiliation": "Universitat Politècnica de València",
-      "name": "Sáez, Carlos"
+      "name": "Sáez, Carlos",
+      "role": "WorkPackageLeader"
     }
   ],
   "contributors": [
     {
       "name": "Doñate Martínez, Ascensión",
-      "contributor_type": "Researcher",
+      "contributor_type": "ProjectMember",
       "affiliation": "Universitat Politècnica de València"
     },
     {
       "name": "Telleria Orriols, Carlos",
-      "contributor_type": "Researcher",
+      "contributor_type": "WorkPackageLeader",
       "affiliation": "Instituto Aragonés de Ciencias de la Salud"
     },
     {
       "name": "Beliën, Jeroen",
-      "contributor_type": "Researcher",
+      "contributor_type": "WorkPackageLeader",
       "affiliation": "Lygature"
     },
     {
       "name": "Boiten, Jan-Willem",
-      "contributor_type": "Researcher",
+      "contributor_type": "WorkPackageLeader",
       "affiliation": "Lygature"
     },
     {
@@ -51,7 +55,7 @@
     },
     {
       "name": "Estupiñán Romero, Francisco",
-      "contributor_type": "Researcher",
+      "contributor_type": "ProjectMember",
       "affiliation": "Instituto Aragonés de Ciencias de la Salud"
     }
   ],
