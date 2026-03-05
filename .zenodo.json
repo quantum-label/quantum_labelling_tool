@@ -23,6 +23,38 @@
       "name": "Sáez, Carlos"
     }
   ],
+  "contributors": [
+    {
+      "name": "Doñate Martínez, Ascensión",
+      "contributor_type": "Researcher",
+      "affiliation": "Universitat Politècnica de València"
+    },
+    {
+      "name": "Telleria Orriols, Carlos",
+      "contributor_type": "Researcher",
+      "affiliation": "Instituto Aragonés de Ciencias de la Salud"
+    },
+    {
+      "name": "Beliën, Jeroen",
+      "contributor_type": "Researcher",
+      "affiliation": "Lygature"
+    },
+    {
+      "name": "Boiten, Jan-Willem",
+      "contributor_type": "Researcher",
+      "affiliation": "Lygature"
+    },
+    {
+      "name": "Bernal-Delgado, Enrique",
+      "contributor_type": "ProjectLeader",
+      "affiliation": "Instituto Aragonés de Ciencias de la Salud"
+    },
+    {
+      "name": "Estupiñán Romero, Francisco",
+      "contributor_type": "Researcher",
+      "affiliation": "Instituto Aragonés de Ciencias de la Salud"
+    }
+  ],
   "keywords": [
     "Data Quality",
     "Labelling",
@@ -31,7 +63,11 @@
     "DQ"
   ],
   "grants": [
-    {"id": "10.13039/501100000780::101137057"}
+    {
+      "id": "10.13039/501100000780::101137057"
+    }
   ],
-  "language": ["eng"]
+  "language": [
+    "eng"
+  ]
 }
