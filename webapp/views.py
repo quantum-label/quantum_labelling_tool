@@ -139,7 +139,7 @@ def user_dashboard_view(request: HttpRequest) -> HttpResponse:
             return redirect_with_message(
                 request,
                 '/',
-                'User not associated to an organization. Please, contact administrator: pilot@quantumproject.eu .'
+                'User not associated to an organization. Please, contact administrator.'
             )
 
         user_organization = user_organization.first()
@@ -1272,7 +1272,7 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
             return redirect_with_message(
                 request,
                 '/',
-                'User not associated to an organization. Please, contact administartor: pilot@quantumproject.eu .'
+                'User not associated to an organization. Please, contact administartor.'
             )
 
         user_organization = user_organization.first().organization
