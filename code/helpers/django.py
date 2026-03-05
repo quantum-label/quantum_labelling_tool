@@ -68,7 +68,7 @@ def is_user_allowed_to_access(
         return False, redirect_with_message(
             request,
             '/',
-            'User not associated to an organization. Please, contact administrator: pilot@quantumproject.eu .'
+            'User not associated to an organization. Please, contact administrator.'
         )
 
     user_organization = user_organization.first()

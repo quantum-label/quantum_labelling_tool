@@ -8,39 +8,6 @@
 
 {% block content %}
 
-<div class="card card-body alert alert-warning">
-    <span>
-        <a data-bs-toggle="modal" href="#" data-bs-target="#disclaimerModal">
-            For piloting only: you need to create a catalogue and dataset here to mimic the EHDS structure. In the future, the label will link directly to your dataset’s existing metadata in its catalogue.
-        </a>
-    </span>
-</div>
-
-<div class="modal fade" id="disclaimerModal" aria-labelledby="disclaimerModal" aria-hidden="true" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Disclaimer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    In the current pilot version of the tool, you are asked to create a <i>Data Catalogue</i> and a <i>Dataset</i> before performing a quality and utility assessment. This setup is designed to mimic the structure of the European Health Data
-                    Space (EHDS),
-                    where datasets are always organised within national or institutional catalogues.
-                </p>
-                <p>
-                    For now, the catalogue you create here serves only as a placeholder to support the piloting process. In the future, the Data Quality and Utility Label will not require manual creation of a catalogue. Instead, it will be directly linked
-                    to the existing metadata description of your dataset in your institution’s or country’s catalogue, fully aligning with the EHDS structure.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <h3 class="text-center mt-3 mb-3"> {{user.get_username}}'s DQ&U Dashboard</h3>
 
 <div class="d-flex justify-content-center">
@@ -219,9 +186,7 @@
         </div>
     </div>
 </div>
-<div class="text-center" style=" margin-top:10px; margin-bottom: 20px;">
-    <i>Need help? Visit the Help Center or create a ticket by <a href="https://quantumproject.zohodesk.eu/portal/en/home" target="_blank"> clicking here</a></i>
-</div>
+
 <script>
     $(document).ready(function () {
         $('#catalogues').DataTable({
