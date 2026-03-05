@@ -144,7 +144,7 @@ docker exec -it quantumdatabase bash
 - MariaDB
 
 ## Interoperability Test Bed Disclaimer
-The QUANTUM Labelling Tool primarily operates as a user-facing application for collecting DQ&U and maturity evaluations, rather than as a system exchanging structured messages with external services. Consequently, the use of the Interoperability Test Bed is not directly applicable. Interoperability is ensured by using standard semantic representations (e.g., RDF and DQV) to export evaluation results.
+The QUANTUM Labelling Tool primarily operates as a standalone application for collecting DQ&U and maturity evaluations. The tool does not connect to external APIs or third-party systems for automated data exchange. Consequently, the use of the Interoperability Test Bed is not directly applicable. Interoperability is ensured by using standard semantic representations (e.g., RDF and DQV) to export evaluation results.
 
 
 ## Licence
