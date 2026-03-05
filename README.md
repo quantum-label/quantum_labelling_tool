@@ -154,11 +154,11 @@ To view a copy of this license, visit [http://creativecommons.org/licenses/by-nc
 ![CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/88x31.png)
 
 ## Credits
-**Version:** 0.1
+**Version:** 1.0
 
 **Authors:** QUANTUM WP2: Claudio Proietti Mercuri (Sciensano), Ángel Sánchez-García (UPV), Nienke Schutte (Sciensano), Carlos Sáez (UPV); on behalf of [QUANTUM](https://quantumproject.eu).
 
-**Maintainers:** Claudio Proietti Mercuri (Sciensano), Ángel Sánchez-García (UPV), Francisco Estupiñan Romero (IACS).
+**Maintainers:** Ángel Sánchez-García (UPV), Claudio Proietti Mercuri (Sciensano), Francisco Estupiñan Romero (IACS).
 
 **Acknowledgements:** QUANTUM WP1, WP2, WP3 partners and all participants in the tool piloting for their feedback.
 
