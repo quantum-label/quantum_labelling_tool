@@ -177,7 +177,7 @@
             <script>
                 // Confirmation before submitting the form
                 function confirmDeletion() {
-                    const confirmDelete = confirm('Are you sure you want to delete this dataset? This action cannot be undone.'); // confirm('...'): Displays a pop-up confirmation box with the provided message. The function returns true if the user clicks "OK" and false if they click "Cancel".
+                    const confirmDelete = confirm('Are you sure you want to delete this element? This action cannot be undone.'); // confirm('...'): Displays a pop-up confirmation box with the provided message. The function returns true if the user clicks "OK" and false if they click "Cancel".
                     if (!confirmDelete) { // confirmDelete: This variable holds the result of the confirmation. true for "OK", false for "Cancel". 
                         event.preventDefault(); //  This prevents the form submission, stopping the page from reloading or sending a request.
                     }

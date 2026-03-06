@@ -30,7 +30,7 @@ class MaturityPDFCreator(PDFCreator):
             'score': score,
             'maturity_assessment': maturity_dictionary,
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'version': '0.1',
+            'version': '1.0',
         }
 
         return data

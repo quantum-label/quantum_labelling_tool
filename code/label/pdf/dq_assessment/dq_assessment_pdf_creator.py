@@ -39,7 +39,7 @@ class DQAssessmentPDFCreator(PDFCreator):
             'catalogue': self.catalogue,
             'organization': self.organization,
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'version': '0.1',
+            'version': '1.0',
             'results': results
         }
 
