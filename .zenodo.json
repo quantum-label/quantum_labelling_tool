@@ -6,56 +6,56 @@
       "orcid": "0000-0003-1843-9209",
       "affiliation": "Universitat Politècnica de València",
       "name": "Sánchez-García, Ángel",
-      "role": "ProjectMember"
+      "type": "ProjectMember"
     },
     {
       "orcid": "0009-0000-4373-0095",
       "affiliation": "Sciensano",
       "name": "Proietti Mercuri, Claudio",
-      "role": "WorkPackageLeader"
+      "type": "WorkPackageLeader"
     },
     {
       "orcid": "0000-0002-8064-2569",
       "affiliation": "Sciensano",
       "name": "Schutte, Nienke",
-      "role": "ProjectMember"
+      "type": "ProjectMember"
     },
     {
       "orcid": "0000-0003-2678-8249",
       "affiliation": "Universitat Politècnica de València",
       "name": "Sáez, Carlos",
-      "role": "ProjectMember"
+      "type": "ProjectMember"
     }
   ],
   "contributors": [
     {
       "name": "Doñate Martínez, Ascensión",
-      "contributor_type": "ProjectMember",
+      "type": "ProjectMember",
       "affiliation": "Universitat Politècnica de València"
     },
     {
       "name": "Telleria Orriols, Carlos",
-      "contributor_type": "WorkPackageLeader",
+      "type": "WorkPackageLeader",
       "affiliation": "Instituto Aragonés de Ciencias de la Salud"
     },
     {
       "name": "Beliën, Jeroen",
-      "contributor_type": "WorkPackageLeader",
+      "type": "WorkPackageLeader",
       "affiliation": "Lygature"
     },
     {
       "name": "Boiten, Jan-Willem",
-      "contributor_type": "WorkPackageLeader",
+      "type": "WorkPackageLeader",
       "affiliation": "Lygature"
     },
     {
       "name": "Bernal-Delgado, Enrique",
-      "contributor_type": "ProjectLeader",
+      "type": "ProjectLeader",
       "affiliation": "Instituto Aragonés de Ciencias de la Salud"
     },
     {
       "name": "Estupiñán Romero, Francisco",
-      "contributor_type": "ProjectMember",
+      "type": "ProjectMember",
       "affiliation": "Instituto Aragonés de Ciencias de la Salud"
     }
   ],
@@ -71,7 +71,5 @@
       "id": "10.13039/501100000780::101137057"
     }
   ],
-  "language": [
-    "eng"
-  ]
+  "language": "eng"
 }
