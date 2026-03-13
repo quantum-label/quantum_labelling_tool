@@ -14,7 +14,7 @@ authors:
   given-names: "Carlos"
   orcid: "https://orcid.org/0000-0003-2678-8249"
 title: "QUANTUM - The Health Data Quality Label"
-version: "0.2.0"
+version: "1.0.0"
 doi: "https://zenodo.org/records/15168150"
 date-released: "04/04/2025"
 url: "https://github.com/quantum-label/quantum_labelling_tool/"
