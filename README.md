@@ -6,6 +6,8 @@ Cite the code:  [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14637281.svg
 
 ## Introduction
 
+The **QUANTUM Data Quality Labelling Tool** corresponds to **Deliverable D2.1 QUANTUM Tool published in Zenodo Version 1.0 (beta) and software published in GitHub**.
+
 The **QUANTUM Data Quality Labelling Tool** is a key component of the **European Health Data Space (EHDS)** initiative, designed to address the challenge of ensuring that health datasets are of high quality, accessible, and interoperable across EU member states. As healthcare data plays an increasingly vital role in research, policy, and innovation, this tool provides a standardized mechanism to evaluate and label the **quality, utility, and maturity** of datasets, supporting stakeholders such as healthcare institutions, research organizations, and policymakers.
 
 ## Features
@@ -146,7 +148,6 @@ docker exec -it quantumdatabase bash
 ## Interoperability Test Bed Disclaimer
 The QUANTUM Labelling Tool primarily operates as a standalone application for collecting DQ&U and maturity evaluations. The tool does not connect to external APIs or third-party systems for automated data exchange. Consequently, the use of the Interoperability Test Bed is not directly applicable. Interoperability is ensured by using standard semantic representations (e.g., RDF and DQV) to export evaluation results.
 
-
 ## Licence
 This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License. 
 To view a copy of this license, visit [http://creativecommons.org/licenses/by-nc/4.0/](http://creativecommons.org/licenses/by-nc/4.0/).
@@ -163,3 +164,8 @@ To view a copy of this license, visit [http://creativecommons.org/licenses/by-nc
 **Acknowledgements:** QUANTUM WP1, WP2, WP3 partners and all participants in the tool piloting for their feedback.
 
 Funded by EU [QUANTUM](https://quantumproject.eu) project.
+
+## Note: 
+**The QUANTUM Data Quality Labelling Tool** is provided as is without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose different than the intended purpose within the context of the QUANTUM project, and noninfringment. 
+
+Views and opinions expressed are however those of theauthor(s) only and do not necessarily reflect those of the European Union or European Health and Digital Executive Agency (HADEA). Neither the European Union nor the granting authority can be held responsible for them.
