@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}QUANTUM - Maturity Assessment{% endblock %}
+
+{% block nav_md %}active{% endblock nav_md %}
+
+{% block content %}
+
+<div class="card card-body alert alert-warning">
+    <span>
+        <a data-bs-toggle="modal" href="#" data-bs-target="#disclaimerModal">
+            The Maturity Label and the Data Quality & Utility Label are independent: the first assesses organisational maturity, the second assesses dataset quality and utility.
+        </a>
+    </span>
+</div>
+
+<div class="modal fade" id="disclaimerModal" aria-labelledby="disclaimerModal" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Disclaimer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    The <i>Maturity Label</i> and the <i>Data Quality & Utility Label</i> are two distinct and independent concepts.
+                </p>
+                <ul>
+                    <li>
+                        The Maturity Label evaluates the <i>organisational maturity</i> of the data holder (e.g., governance, processes, infrastructure).
+                    </li>
+                    <li>
+                        The Data Quality & Utility Label evaluates the <i>quality and utility</i> of an individual dataset.
+                    </li>
+                </ul>
+                <p>
+                    Neither label is derived from the other — they complement each other by providing different perspectives: one at the organizational level, the other at the dataset level.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fluid-container mt-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'organization_maturity' %}">Maturity Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ assessment_name }}</li>
+      </ol>
+    </nav>
+
+    <h3 class="text-center mt-3 mb-3"> {{ assessment_name }}</h3>
+
+    <div class="row">
+        <h4>Organization: {{ organization }}</h4>
+        <hr>
+        <div>
+            <h5>Maturity Score</h5>
+            <p style="color: grey;"><i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i></p>
+            <p style="margin-top: 2%; margin-bottom: 6%;">
+                <b>Current score:</b> <b class="maturity-level">{{maturity_percentage}}%</b> <b class="left">&nbsp;&nbsp;= </b> <b class="maturity-level"> {{ score }}</b> <span style="font-size: 20px;"> / {{ total_score }}</span>
+            </p>
+            <div class="text-center">
+                {{ plot | safe }}
+
+                <small class="text-muted mt-3">
+                    <i>
+                        The colours used in the plot are solely for visual differentiation of the maturity dimensions and do not carry any specific meaning.
+                    </i>
+                </small>
+            </div>
+        </div>
+
+        <h4 style="margin-top: 8%;">Maturity Assessment</h4>
+        <hr class="mt-0">
+        <div class="d-flex justify-content-center mt-3">
+            <button class="btn btn-secondary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection2" aria-expanded="false" aria-controls="helpSection2">
+                How to Use the Maturity Assessment?
+            </button>
+        </div>
+
+        <div class="collapse mb-3" id="helpSection2">
+            <div class="d-flex justify-content-center">
+                <div class="card card-body" style="max-width: 1000px;">
+                    <h5 class="text-center mb-3"><b>Follow the instructions below to evaluate your dataset</b></h5>
+                    <p class="text-center" style="color: grey;"><i>The maturity model in the QUANTUM project assesses data holders across ten defined dimensions, each with maturity levels from 1 to
+                        5, representing a spectrum from initial to optimized processes. Each dimension's maturity is scored from 1 to 5, yielding an overall score between 10 and 50.</i></p>
+                    <ul>
+                        <li><b>Dimensions</b>: Click on each dimension to expand and view its values.</li>
+                        <li><b>Assessment</b>: Every dimension contains a level of accomplishment, which is can be selected from a list</li>
+                        <li><b><span style="color: rgba(255, 0, 0);">!!</span> Update</b>: Click the "Save changes" button to save your progress. <b><span style="color: rgb(255, 0, 0);">!!</span></b></li>
+                        <li><b>Privacy</b>: This system does not utilize or require access to your data, and it operates in full compliance with GDPR regulations.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-body mt-5 mb-3" style="padding-top: 1%; padding-bottom: 1%;">
+            <p class="text-center" style="margin-bottom: 0%; padding-bottom: 0%;">
+                <b>Evaluate and report the following Maturity Dimensions, to compute <br> the organization maturity score</b>
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-lg-10">
+                <button class="btn btn-secondary" onclick="expandAllAccordions()">Unfold all</button>
+                <button class="btn btn-secondary" onclick="collapseAllAccordions()">Fold all</button>
+            </div>
+            <div class="col-sm-12 col-lg-2">
+                <p>
+                    <span class="bg-warning-subtle">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    To be filled
+                </p>
+                <p>
+                    <span class="bg-success-subtle">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    Filled
+                </p>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress text-center opacity-75 mx-5" role="progressbar">
+                <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
+            </div>
+        </div>
+
+
+        <form id="assessment" method="POST" class="mt-3">
+            {% csrf_token %}
+            <input type="hidden" name="assessment_id" value="{{ assessment_id }}">
+            <div class="mb-3">
+
+                {% for dimension_name, dimension in dimensions.items %}
+                <div class="accordion mb-3" id="accordion_{{ dimension.id }}">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    id="button{{ dimension.id }}"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseCategory{{ dimension.id }}"
+                                    aria-controls="collapseCategory{{ dimension.id }}">
+                                {{ forloop.counter }}. {{ dimension_name }}
+                            </button>
+                        </h2>
+                        <div id="collapseCategory{{ dimension.id }}"
+                             class="accordion-collapse collapse"
+                             data-bs-parent="#accordion{{ dimension.id }}">
+                            <div class="accordion-body">
+                                <div class="card mb-2 p-2 bg-light">
+                                    <div class="m-1 form-text text-muted">
+                                        <p><span style="color: rgba(3, 8, 80, 0.616);">Definition:</span> {{ dimension.definition }}</p>
+                                    </div>
+                                </div>
+
+
+                                <select name="dimension_value_{{ dimension.id }}"
+                                        class="form-select"
+                                        aria-label="Default select example"
+                                        {% if dimension.value %}
+                                        value="{{ dimension.value }}"
+                                        {% endif %}
+                                        onchange="validateAndHighlightFieldsByIds(['{{ dimension.id }}'], true)"
+                                >
+                                    <option value="-">
+                                        ----
+                                    </option>
+                                    {% for dimension_option in dimension.options %}
+                                    {% if dimension_option.value == dimension.value %}
+                                    <option value="{{ dimension_option.value }}" selected>
+                                        {{dimension_option.text }}
+                                    </option>
+                                    {% else %}
+                                    <option value="{{ dimension_option.value }}">
+                                        {{dimension_option.text }}
+                                    </option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+
+                                <script>
+                                    validateAndHighlightFieldsByIds(['{{ dimension.id }}'])
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-success">Save changes</button>
+            </div>
+
+        </form>
+        <div class="text-center mt-4 mb-3">
+            <a href="{% url 'organization_maturity' %}">
+                <button type="button" class="btn btn-primary">Go to Maturity Dashboard</button>
+            </a>
+        </div>
+        <div class="mt-5"></div>
+    </div>
+</div>
+
+<script>
+    let elements = document.querySelectorAll('a');
+
+    elements.forEach(element => {
+        element.addEventListener("click", enableLeaveWarning);
+    });
+
+    updateProgressBar();
+</script>
+{% endblock %}

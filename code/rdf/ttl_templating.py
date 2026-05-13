@@ -1,21 +1,30 @@
 import os
+import re
 
 from code.helpers.django import generate_assessment_stars, compute_amount_of_stars
-from code.label.label import compute_scores
-from webapp.models import Dataset, Catalogue, DQMetricValue, DQMetric, DQDimension, EHDSCategory, DQAssessment
+from code.label.label import compute_scores, compute_maturity_score
+from webapp.models import Dataset, Catalogue, DQMetricValue, DQMetric, DQDimension, EHDSCategory, DQAssessment, \
+    MaturityAssessment, MaturityDimensionValue, MaturityDimension
+
+
+def escape_quotes(text: str) -> str:
+    if text is None:
+        return ""
+    return text.replace('"', '\\"')
 
 
 def format_name(dimension_name: str) -> str:
     """
     Converts a dimension name into a format suitable for RDF.
-    - If the name has one word (e.g., "accuracy"), it remains unchanged.
-    - If the name has multiple words (e.g., "data provenance"), it is converted to "DataProvenance".
+    - Removes special characters.
+    - Joins words with underscores.
 
     :param dimension_name: The original dimension name.
-    :return: A formatted string with no spaces and capitalized initials.
+    :return: A formatted string.
     """
-    words = dimension_name.split()
-    return '_'.join(word.capitalize() for word in words)
+    clean_name = re.sub(r'[^a-zA-Z0-9\s]', '', dimension_name)
+    return '_'.join(clean_name.split())
+
 
 def template_prefix() -> str:
     return f'''@prefix dcat: <http://www.w3.org/ns/dcat#> .
@@ -40,9 +49,9 @@ def template_catalogue(catalogue: Catalogue) -> str:
 '''
 
 
-#def template_dataset(catalogue: Catalogue, dataset: Dataset) -> str:
+# def template_dataset(catalogue: Catalogue, dataset: Dataset) -> str:
 #    return f'''
-#<{os.getenv('FDP_URL', '')}/dataset/{dataset.fdp_id or dataset.name}> 
+# <{os.getenv('FDP_URL', '')}/dataset/{dataset.fdp_id or dataset.name}>
 #    a dcat:Dataset ;
 #    dcterms:title "{dataset.name}" ;
 #    dct:hasVersion "{dataset.version}" ;
@@ -50,15 +59,7 @@ def template_catalogue(catalogue: Catalogue) -> str:
 #    dct:isPartOf <http://{os.getenv('FDP_URL', None)}/catalog/{catalogue.fdp_id or catalogue.title}>;
 #    dqv:hasQualityAnnotation <{os.getenv('FDP_URL', None)}/qualityCertificate/{dataset.fdp_id or ''}> 
 #    .
-#'''
-
-
-# def template_distribution(dataset: Dataset) -> str:
-#     return f'''> a dcat:Distribution ;
-#             dcat:downloadURL <http://www.example.org/files/mydataset.csv> ;
-#             dcterms:title "CSV distribution of dataset" ;
-#             dcat:mediaType "text/csv" ;
-#             dcat:byteSize "NA"^^xsd:decimal .'''
+# '''
 
 
 def template_quality_certificate(
@@ -192,6 +193,55 @@ qnt:{format_name(category.name)}
 '''
 
 
+def template_maturity_assessment(
+        dataset: Dataset,
+        assessment: MaturityAssessment,
+        score: int,
+        dimension_names: list,
+        measurement_names: list
+) -> str:
+    dimensions_str = ",\n    ".join(f"qnt:{dimension}" for dimension in dimension_names)
+    measurements_str = ",\n    ".join(f"qnt:{measurement_name}" for measurement_name in measurement_names)
+
+    return f'''
+<{os.getenv('FDP_URL', '')}/maturity/{assessment.id}>
+    a qnt:MaturityAssessment ;
+    oa:hasTarget <{os.getenv('FDP_URL', '')}/dataset/{dataset.fdp_id or dataset.id}> ;
+    dct:title "{escape_quotes(assessment.name)}"@en ;
+    qnt:maturityScore "{score}"^^xsd:integer ;
+    dqv:inDimension 
+    {dimensions_str} ;
+    qnt:hasMaturityMeasurement
+    {measurements_str} .
+'''
+
+
+def template_maturity_measurement(
+        assessment: MaturityAssessment,
+        dimension_name: str,
+        value: int,
+        dataset: Dataset
+) -> str:
+    return f'''
+qnt:{format_name(dimension_name)}_maturity_measurement 
+    a qnt:MaturityMeasurement ;
+    qnt:computedOn <{os.getenv('FDP_URL', '')}/dataset/{dataset.fdp_id or dataset.id}> ;
+    qnt:isMeasurementOf qnt:{format_name(dimension_name)}_maturity_dimension ;
+    dqv:value "{value}"^^xsd:integer ;
+    .
+'''
+
+
+def template_maturity_dimension(dimension: MaturityDimension) -> str:
+    return f'''
+qnt:{format_name(dimension.name)}_maturity_dimension
+    a qnt:MaturityDimension ;
+    skos:prefLabel "{dimension.name}"@en ;
+    skos:definition "{escape_quotes(dimension.definition)}"@en ;
+    .
+'''
+
+
 def generate_ttl_file(
         catalogue: Catalogue,
         dataset: Dataset,
@@ -203,16 +253,14 @@ def generate_ttl_file(
     catalogue_filled_template = template_catalogue(
         catalogue=catalogue,
     )
-    #dataset_filled_template = template_dataset(
+    # dataset_filled_template = template_dataset(
     #    catalogue=catalogue,
     #    dataset=dataset
-    #)
-    # distribution_filled_template = template_distribution(dataset=dataset)
+    # )
 
     final_ttl += prefix + '\n'
     final_ttl += catalogue_filled_template + '\n'
-    #final_ttl += dataset_filled_template + '\n'
-    #final_ttl += distribution_filled_template + '\n'
+    # final_ttl += dataset_filled_template + '\n'
 
     assessment = dataset.dq_assessment
 
@@ -285,6 +333,47 @@ def generate_ttl_file(
         assessment,
         stars_text
     ) + '\n'
+
+    # Add Maturity Assessment if linked
+    if dataset.maturity_assessment:
+        maturity_assessment = dataset.maturity_assessment
+        _, total_maturity_score = compute_maturity_score(assessment=maturity_assessment)
+
+        maturity_dimension_names = []
+        maturity_measurement_names = []
+        maturity_temporal_ttl = ''
+
+        maturity_dimensions = MaturityDimension.objects.all()
+        for dimension in maturity_dimensions:
+            maturity_dimension_value = MaturityDimensionValue.objects.filter(
+                maturity_dimension=dimension,
+                maturity_assessment=maturity_assessment
+            ).first()
+
+            if maturity_dimension_value is not None:
+                maturity_temporal_ttl += template_maturity_dimension(dimension) + '\n'
+                maturity_dimension_names.append(f"{format_name(dimension.name)}_maturity_dimension")
+
+                m_name = f"{format_name(dimension.name)}_maturity_measurement"
+                maturity_measurement_names.append(m_name)
+                maturity_temporal_ttl += template_maturity_measurement(
+                    maturity_assessment,
+                    dimension.name,
+                    maturity_dimension_value.maturity_dimension_level.value,
+                    dataset
+                ) + '\n'
+
+        final_ttl += template_maturity_assessment(
+            dataset,
+            maturity_assessment,
+            total_maturity_score,
+            maturity_dimension_names,
+            maturity_measurement_names
+        ) + '\n'
+        final_ttl += maturity_temporal_ttl
+
+        # Standalone relation from dataset to maturity assessment
+        final_ttl += f'''<{os.getenv("FDP_URL", "")}/dataset/{dataset.fdp_id or dataset.id}> qnt:hasMaturityAssessment <{os.getenv('FDP_URL', '')}/maturity/{maturity_assessment.id}> .\n'''
 
     final_ttl += temporal_ttl
 

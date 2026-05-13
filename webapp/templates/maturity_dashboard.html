@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}QUANTUM{% endblock %}
+{% block title %}QUANTUM - Maturity Dashboard{% endblock %}
 
 {% block nav_md %}active{% endblock nav_md %}
 
@@ -48,171 +48,105 @@
 
 <h3 class="text-center mt-3 mb-3"> {{user.get_username}}'s Maturity Dashboard</h3>
 
-<div class="fluid-container mt-5"> <!-- class in Bootstrap ensures that the container is full-width and responsive. It is used to contain, pad, and (sometimes) center the content. -->
-    <div class="row"> <!-- organizes the layout into a horizontal group of columns.-->
+<div class="fluid-container mt-5">
+    <div class="row">
         <h4>My organization - {{ organization }}</h4>
         <hr>
-        <div>
-            <h5>Maturity Score</h5>
-            <p style="color: grey;"><i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i></p>
-            <p style="margin-top: 2%; margin-bottom: 6%;">
-                <b>Current score:</b> <b class="maturity-level">{{maturity_percentage}}%</b> <b class="left">&nbsp;&nbsp;= </b> <b class="maturity-level"> {{ score }}</b> <span style="font-size: 20px;"> / {{ total_score }}</span>
-            </p>
-            <div class="text-center">
-                {{ plot | safe }}
+        <p style="color: grey;"><i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i></p>
+    </div>
 
-                <small class="text-muted mt-3">
-                    <i>
-                        The colours used in the plot are solely for visual differentiation of the maturity dimensions and do not carry any specific meaning.
-                    </i>
-                </small>
-            </div>
-        </div>
+    <div class="row mt-4">
+        <div class="col-sm-12 mb-5">
+            <table id="assessments" class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">View/Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 
-        <h4 style="margin-top: 8%;">Maturity Assessment</h4>
-        <hr class="mt-0">
-        <div class="d-flex justify-content-center mt-3">
-            <button class="btn btn-secondary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#helpSection2" aria-expanded="false" aria-controls="helpSection2">
-                How to Use the Maturity Assessment?
-            </button>
-        </div>
-
-        <div class="collapse mb-3" id="helpSection2">
-            <div class="d-flex justify-content-center">
-                <div class="card card-body" style="max-width: 1000px;">
-                    <h5 class="text-center mb-3"><b>Follow the instructions below to evaluate your dataset</b></h5>
-                    <p class="text-center" style="color: grey;"><i>The maturity model in the QUANTUM project assesses data holders across ten defined dimensions, each with maturity levels from 1 to
-                        5, representing a spectrum from initial to optimized processes. Each dimension's maturity is scored from 1 to 5, yielding an overall score between 10 and 50.</i></p>
-                    <ul>
-                        <li><b>Dimensions</b>: Click on each dimension to expand and view its values.</li>
-                        <li><b>Assessment</b>: Every dimension contains a level of accomplishment, which is can be selected from a list</li>
-                        <li><b><span style="color: rgba(255, 0, 0);">!!</span> Update</b>: Click the "Save changes" button to save your progress. <b><span style="color: rgb(255, 0, 0);">!!</span></b></li>
-                        <li><b>Privacy</b>: This system does not utilize or require access to your data, and it operates in full compliance with GDPR regulations.</li>
-                    </ul>
+            <div class="row justify-content-center mt-3">
+                <div class="col-auto">
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAssessmentModal">
+                        Create new assessment
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="card card-body mt-5 mb-3" style="padding-top: 1%; padding-bottom: 1%;">
-            <p class="text-center" style="margin-bottom: 0%; padding-bottom: 0%;">
-                <b>Evaluate and report the following Maturity Dimensions, to compute <br> the organization maturity score</b>
-            </p>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 col-lg-10">
-                <button class="btn btn-secondary" onclick="expandAllAccordions()">Unfold all</button>
-                <button class="btn btn-secondary" onclick="collapseAllAccordions()">Fold all</button>
-            </div>
-            <div class="col-sm-12 col-lg-2">
-                <p>
-                    <span class="bg-warning-subtle">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    To be filled
-                </p>
-                <p>
-                    <span class="bg-success-subtle">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    Filled
-                </p>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <div class="progress text-center opacity-75 mx-5" role="progressbar">
-                <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
-            </div>
-        </div>
-
-
-        <form id="assessment" method="POST" class="mt-3"> <!-- Starts a form that will send data via a POST request when submitted. This is used for data submission. -->
-            {% csrf_token %} <!-- is a security measure to protect against Cross-Site Request Forgery attacks. Django automatically checks for this token in any form submission.-->
-            <div class="mb-3">
-
-                {% for dimension_name, dimension in dimensions.items %}  <!-- This nested loop iterates over each dimension within the current category. Each dimension has a name, definition, and a list of metrics. -->
-                <div class="accordion mb-3" id="accordion_{{ dimension.id }}">
-                    <!--Another accordion is created for each dimension under its respective category, identified uniquely using both the category and dimension IDs.-->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button"
-                                    id="button{{ dimension.id }}"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#collapseCategory{{ dimension.id }}"
-                                    aria-controls="collapseCategory{{ dimension.id }}">
-                                {{ forloop.counter }}. {{ dimension_name }}
-                            </button>
-                        </h2>
-                        <div id="collapseCategory{{ dimension.id }}"
-                             class="accordion-collapse collapse"
-                             data-bs-parent="#accordion{{ dimension.id }}">
-                            <div class="accordion-body">
-                                <div class="card mb-2 p-2 bg-light">
-                                    <div class="m-1 form-text text-muted">
-                                        <p><span style="color: rgba(3, 8, 80, 0.616);">Definition:</span> {{ dimension.definition }}</p>
-                                    </div>
-                                </div>
-
-
-                                <select name="dimension_value_{{ dimension.id }}"
-                                        class="form-select"
-                                        aria-label="Default select example"
-                                        {% if dimension.value %}
-                                        value="{{ dimension.value }}"
-                                        {% endif %}
-                                        onchange="validateAndHighlightFieldsByIds(['{{ dimension.id }}'], true)"
-                                >
-                                    <option value="-">
-                                        ----
-                                    </option>
-                                    {% for dimension_option in dimension.options %}
-                                    {% if dimension_option.value == dimension.value %}
-                                    <option value="{{ dimension_option.value }}" selected>
-                                        {{dimension_option.text }}
-                                    </option>
-                                    {% else %}
-                                    <option value="{{ dimension_option.value }}">
-                                        {{dimension_option.text }}
-                                    </option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-
-                                <script>
-                                    validateAndHighlightFieldsByIds(['{{ dimension.id }}'])
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <div class="text-center mt-5">
-                <button type="submit" class="btn btn-success">Save changes</button>
-            </div>
-
-            <div class="mt-5 text-center">
-                <a href="{% url 'organization_maturity_pdf' %}">
-                    <button type="button" class="btn btn-success">Download PDF</button>
-                </a>
-            </div>
-
-        </form>
-        <div class="text-center mt-4 mb-3">
-            <a href="{% url 'dashboard' %}">
-                <button type="button" class="btn btn-primary">Go to DQ&U Dashboard</button>
-            </a>
-        </div>
-        <div class="mt-5"></div>
+    <div class="text-center mt-4 mb-3">
+        <a href="{% url 'dashboard' %}">
+            <button type="button" class="btn btn-primary">Go to DQ&U Dashboard</button>
+        </a>
     </div>
 </div>
 
+<!-- Create Assessment Modal -->
+<div class="modal fade" id="createAssessmentModal" tabindex="-1" aria-labelledby="createAssessmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{% url 'maturity_create' %}" method="POST">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="createAssessmentModalLabel">New Maturity Assessment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="assessment_name" class="form-label">Assessment Name</label>
+              <input type="text" class="form-control" id="assessment_name" name="assessment_name" placeholder="e.g. Q1 2024 Assessment" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Create</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
-    let elements = document.querySelectorAll('a');
-
-    elements.forEach(element => {
-        element.addEventListener("click", enableLeaveWarning);
+    $(document).ready(function () {
+        $('#assessments').DataTable({
+            responsive: true,
+            processing: true,
+            data: {{ assessments | safe }},
+            order: [
+                [1, "desc"]
+            ],
+            pageLength: 10,
+            columns: [
+                { "data": "name" },
+                { "data": "date", className: "text-center" },
+                { "data": "score", className: "text-center" },
+                {
+                    "data": "view_url",
+                    "render": function(data, type, row) {
+                        return '<a href="' + data + '"><button class="btn btn-secondary">View/Edit</button></a>';
+                    },
+                    className: "text-center",
+                    "orderable": false
+                },
+                {
+                    "data": "delete_url",
+                    "render": function(data, type, row) {
+                        return '<a href="' + data + '" onclick="return confirm(\'Are you sure?\')"><button class="btn btn-danger">Delete</button></a>';
+                    },
+                    className: "text-center",
+                    "orderable": false
+                }
+            ]
+        });
     });
-
-    updateProgressBar();
 </script>
+
 {% endblock %}
 

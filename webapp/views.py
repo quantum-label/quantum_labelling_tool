@@ -13,16 +13,12 @@ from django.urls import reverse
 
 from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
 from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
-
-from code.label.pdf.pdf_creator import PDFCreator
 from code.helpers.django import redirect_with_message, generate_assessment_stars, is_user_allowed_to_access
 from code.label.label import plot_label, compute_scores, compute_maturity_score, plot_maturity
-from code.label.pdf.dq_assessment.dq_assessment_pdf_creator import DQAssessmentPDFCreator
-from code.label.pdf.maturity.maturity_pdf_creator import MaturityPDFCreator
 from code.rdf.ttl_templating import generate_ttl_file
 from webapp.models import Dataset, DQAssessment, DQMetric, DQMetricValue, EHDSCategory, DQDimension, \
     DQCategoricalMetricCategory, UserOrganization, Catalogue, MaturityDimension, MaturityDimensionLevel, \
-    MaturityDimensionValue
+    MaturityDimensionValue, MaturityAssessment
 
 
 ###########################
@@ -586,6 +582,8 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         user = request.user
         catalogues = Catalogue.objects.filter(user=user)
+        organization = UserOrganization.objects.filter(user=user).first().organization
+        maturities = MaturityAssessment.objects.filter(organization=organization)
 
         if len(catalogues) == 0:
             return redirect_with_message(
@@ -598,7 +596,8 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
             request,
             'dataset_create.html',
             context={
-                'catalogues': catalogues
+                'catalogues': catalogues,
+                'maturities': maturities
             }
         )
     # If it is a POST its the form filled
@@ -608,6 +607,7 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
         dataset_description = request.POST.get('dataset_description', None)
         dataset_catalogue_id = request.POST.get('dataset_catalogue', None)
         dataset_URI = request.POST.get('dataset_URI', None)
+        dataset_maturity_id = request.POST.get('dataset_maturity', None)
 
         try:
             dataset_version = float(request.POST.get('dataset_version', 1))
@@ -661,6 +661,9 @@ def dataset_create_view(request: HttpRequest) -> HttpResponse:
                 organization=organization,
                 catalogue=catalogue
             )
+
+            if dataset_maturity_id:
+                dataset.maturity_assessment = MaturityAssessment.objects.filter(id=dataset_maturity_id).first()
 
             dq_assessment = DQAssessment(
                 start_date=datetime.now()
@@ -721,6 +724,9 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
 
         catalogue = Catalogue.objects.get(dataset=dataset)
         catalogues = Catalogue.objects.filter(user=user)
+        user_organization = UserOrganization.objects.filter(user=user).first()
+        organization = user_organization.organization
+        maturities = MaturityAssessment.objects.filter(organization=organization)
 
         return render(
             request,
@@ -728,7 +734,8 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
             context={
                 'dataset': dataset,
                 'catalogue': catalogue,
-                'catalogues': catalogues
+                'catalogues': catalogues,
+                'maturities': maturities
             }
         )
     # If it is a POST its the form filled
@@ -738,6 +745,7 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
         dataset_name = request.POST.get('dataset_name', None)
         dataset_description = request.POST.get('dataset_description', None)
         dataset_URI = request.POST.get('dataset_URI', None)
+        dataset_maturity_id = request.POST.get('dataset_maturity', None)
 
         try:
             dataset_version = float(request.POST.get('dataset_version', 1))
@@ -785,7 +793,7 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
                 version=dataset_version,
                 organization=organization,
                 catalogue=catalogue
-            ).exists()
+            ).exclude(id=dataset_id).exists()
 
             # If the dataset is duplicated we make a redirect with a message
             if exists_duplicated_dataset:
@@ -798,6 +806,11 @@ def dataset_modify_view(request: HttpRequest) -> HttpResponse:
             dataset.name = dataset_name
             dataset.description = dataset_description
             dataset.URI = dataset_URI
+
+            if dataset_maturity_id:
+                dataset.maturity_assessment = MaturityAssessment.objects.filter(id=dataset_maturity_id).first()
+            else:
+                dataset.maturity_assessment = None
             dataset.version = dataset_version
 
             dataset.save()
@@ -1226,7 +1239,10 @@ def dataset_label_view(request: HttpRequest) -> HttpResponse:
         stars_element = generate_assessment_stars(total_score)
 
         # Maturity score
-        dimensions_dictionary, matrix_score = compute_maturity_score(organization=organization)
+        if dataset.maturity_assessment:
+            dimensions_dictionary, matrix_score = compute_maturity_score(assessment=dataset.maturity_assessment)
+        else:
+            matrix_score = 0
         maturity_percentage = matrix_score * 100 / 50
 
         # show the progress bar in the label page
@@ -1272,32 +1288,114 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
             return redirect_with_message(
                 request,
                 '/',
-                'User not associated to an organization. Please, contact administartor.'
+                'User not associated to an organization. Please, contact administrator.'
             )
 
-        user_organization = user_organization.first().organization
+        organization = user_organization.first().organization
+        assessments = MaturityAssessment.objects.filter(organization=organization)
 
-        dimensions_dictionary, matrix_score = compute_maturity_score(organization=user_organization)
-
-        maturity_plot = plot_maturity(user_organization)
-        maturity_percentage = matrix_score * 100 / 50
+        assessment_list = []
+        for assessment in assessments:
+            _, score = compute_maturity_score(assessment=assessment)
+            assessment_list.append({
+                'id': assessment.id,
+                'name': assessment.name,
+                'date': assessment.date.strftime('%Y-%m-%d %H:%M'),
+                'score': score,
+                'view_url': f"{reverse('maturity_assessment')}?id={assessment.id}",
+                'delete_url': f"{reverse('maturity_delete')}?id={assessment.id}",
+            })
 
         return render(
             request,
             'maturity_dashboard.html',
             context={
+                'assessments': json.dumps(assessment_list),
+                'organization': organization.name
+            }
+        )
+    else:
+        return redirect('/')
+
+
+@login_required
+def maturity_create_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST':
+        user = request.user
+        name = request.POST.get('assessment_name', 'New Assessment')
+        organization = UserOrganization.objects.get(user=user).organization
+
+        assessment = MaturityAssessment.objects.create(
+            name=name,
+            organization=organization
+        )
+
+        return redirect_with_message(
+            request,
+            f"{reverse('maturity_assessment')}?id={assessment.id}",
+            f'Maturity assessment "{name}" created!'
+        )
+    return redirect('organization_maturity')
+
+
+@login_required
+def maturity_delete_view(request: HttpRequest) -> HttpResponse:
+    assessment_id = request.GET.get('id', None)
+    if assessment_id:
+        assessment = MaturityAssessment.objects.filter(id=assessment_id).first()
+        if assessment:
+            # Check permission
+            user_org = UserOrganization.objects.get(user=request.user).organization
+            if assessment.organization == user_org:
+                name = assessment.name
+                assessment.delete()
+                return redirect_with_message(
+                    request,
+                    reverse('organization_maturity'),
+                    f'Maturity assessment "{name}" deleted!'
+                )
+    return redirect('organization_maturity')
+
+
+@login_required
+def maturity_assessment_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'GET':
+        assessment_id = request.GET.get('id', None)
+        if not assessment_id:
+            return redirect('organization_maturity')
+
+        assessment = MaturityAssessment.objects.filter(id=assessment_id).first()
+        if not assessment:
+            return redirect('organization_maturity')
+
+        # Check permission
+        user_org = UserOrganization.objects.get(user=request.user).organization
+        if assessment.organization != user_org:
+            return redirect('organization_maturity')
+
+        dimensions_dictionary, matrix_score = compute_maturity_score(assessment=assessment)
+
+        maturity_plot = plot_maturity(assessment)
+        maturity_percentage = matrix_score * 100 / 50
+
+        return render(
+            request,
+            'maturity_assessment.html',
+            context={
+                'assessment_id': assessment.id,
+                'assessment_name': assessment.name,
                 'dimensions': dimensions_dictionary,
                 'score': matrix_score,
                 'total_score': 5 * 10,
-                'organization': user_organization.name,
+                'organization': user_org.name,
                 'plot': maturity_plot,
                 'maturity_percentage': maturity_percentage
             }
         )
     elif request.method == 'POST':
         post_keys = request.POST.keys()
-        user = request.user
-        user_organization = UserOrganization.objects.get(user=user).organization
+        assessment_id = request.POST.get('assessment_id')
+        assessment = MaturityAssessment.objects.get(id=assessment_id)
 
         # We search for the "dimension_" keys in the POST dictionary
         dimensions = []
@@ -1329,7 +1427,7 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
 
             lookup_fields = {
                 'maturity_dimension': maturity_dimension,
-                'maturity_organization': user_organization
+                'maturity_assessment': assessment
             }
             previous_maturity_dimension_level = MaturityDimensionValue.objects.filter(**lookup_fields)
 
@@ -1337,7 +1435,6 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
             if not dimension[1]:
                 if len(previous_maturity_dimension_level) > 0:
                     previous_maturity_dimension_level[0].delete()
-
                     changes.append(maturity_dimension.name)
                 continue
 
@@ -1348,31 +1445,23 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
                 if previous_maturity_dimension_level[0].maturity_dimension_level.value == value:
                     continue
 
-            maturity_dimension_level = MaturityDimensionLevel.objects.get(
+            level = MaturityDimensionLevel.objects.get(
                 maturity_dimension=maturity_dimension,
                 value=value
             )
 
-            maturity_dimension_value, created = MaturityDimensionValue.objects.get_or_create(
-                maturity_dimension=maturity_dimension,
-                maturity_organization=user_organization
+            MaturityDimensionValue.objects.update_or_create(
+                defaults={'maturity_dimension_level': level},
+                **lookup_fields
             )
-
-            # If no previous value or it is distinct to before
-            if maturity_dimension_value.maturity_dimension_level is None or \
-                    maturity_dimension_value.maturity_dimension_level.value != value:
-                changes.append(maturity_dimension.name)
-
-            maturity_dimension_value.maturity_dimension_level = maturity_dimension_level
-
-            maturity_dimension_value.save()
+            changes.append(maturity_dimension.name)
 
         changes = set(changes)
         changes_message = ''
 
         if len(changes) > 0:
             changes_message = f'''
-                The organization maturity matrix has changed!
+                The maturity assessment "{assessment.name}" has been updated!
                 <br>
                 Changes in dimensions:
             '''
@@ -1382,14 +1471,8 @@ def organization_maturity_view(request: HttpRequest) -> HttpResponse:
 
         return redirect_with_message(
             request,
-            '/organization/maturity',
+            f"{reverse('maturity_assessment')}?id={assessment.id}",
             changes_message
-        )
-    else:
-        return redirect_with_message(
-            request,
-            '/dashboard',
-            f'Wrong access!'
         )
 
 
@@ -1479,16 +1562,26 @@ def download_assessment_pdf(request: HttpRequest) -> HttpResponse:
 @login_required
 def download_organization_maturity_pdf(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
-        user = request.user
-        organization = UserOrganization.objects.filter(user=user).first().organization
+        assessment_id = request.GET.get('id', None)
+        if not assessment_id:
+            return redirect('organization_maturity')
+
+        assessment = MaturityAssessment.objects.filter(id=assessment_id).first()
+        if not assessment:
+            return redirect('organization_maturity')
+
+        # Check permission
+        user_org = UserOrganization.objects.get(user=request.user).organization
+        if assessment.organization != user_org:
+            return redirect('organization_maturity')
 
         pdf_creator = MaturityPDFCreator(
-            organization=organization
+            assessment=assessment
         )
         pdf_file = pdf_creator.generate_pdf()
 
         response = HttpResponse(pdf_file, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="maturity_report.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="maturity_report_{assessment.id}.pdf"'
 
         return response
     else:

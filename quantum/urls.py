@@ -36,5 +36,8 @@ urlpatterns = [
     path('catalogue/modify', catalogue_modify_view, name='catalogue_modify'),
     path('catalogue/delete', catalogue_delete_view, name='catalogue_delete'),
     path('organization/maturity', organization_maturity_view, name='organization_maturity'),
+    path('organization/maturity/assessment', maturity_assessment_view, name='maturity_assessment'),
+    path('organization/maturity/create', maturity_create_view, name='maturity_create'),
+    path('organization/maturity/delete', maturity_delete_view, name='maturity_delete'),
     path('organization/maturity/pdf', download_organization_maturity_pdf, name='organization_maturity_pdf'),
 ]
