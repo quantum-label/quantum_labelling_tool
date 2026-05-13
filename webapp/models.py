@@ -26,6 +26,20 @@ class Organization(models.Model):
 
 
 # Maturity
+class MaturityAssessment(models.Model):
+    name = models.CharField(max_length=256)
+    date = models.DateTimeField(auto_now_add=True)
+    organization = models.ForeignKey(
+        'Organization',
+        on_delete=models.CASCADE
+    )
+    rdf = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.name} ({self.organization.name})'
+
+
+# Maturity
 class MaturityDimensionValue(models.Model):
     maturity_dimension_level = models.ForeignKey(
         'MaturityDimensionLevel',
@@ -38,6 +52,13 @@ class MaturityDimensionValue(models.Model):
         on_delete=models.CASCADE,
         default=None
     )
+    maturity_assessment = models.ForeignKey(
+        'MaturityAssessment',
+        on_delete=models.CASCADE,
+        null=True,
+        default=None
+    )
+    # TODO: To remove after migration
     maturity_organization = models.ForeignKey(
         'Organization',
         on_delete=models.CASCADE,
@@ -103,6 +124,12 @@ class Dataset(models.Model):
         'Catalogue',
         on_delete=models.CASCADE,
         null=True  # TODO: To remove
+    )
+    maturity_assessment = models.ForeignKey(
+        'MaturityAssessment',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     def __str__(self):

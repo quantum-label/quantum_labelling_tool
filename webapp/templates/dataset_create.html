@@ -84,6 +84,19 @@
                     <small class="form-text text-muted">Insert numbers</small>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Linked Maturity Assessment
+                        <span class="question-mark" data-bs-toggle="tooltip" title="Link this dataset to an organizational maturity assessment." style="cursor: pointer;">?</span>
+                    </label>
+                    <select name="dataset_maturity" class="form-select">
+                        <option value="">None / To be filled later</option>
+                        {% for maturity in maturities %}
+                        <option value="{{ maturity.id }}">
+                            {{ maturity.name }} ({{ maturity.date|date:"Y-m-d" }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">
                         Dataset Description
                         <span class="text-danger">*</span>

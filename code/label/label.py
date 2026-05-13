@@ -6,7 +6,7 @@ import plotly.io as pio
 from django.db.models import Sum
 
 from code.helpers.django import generate_assessment_stars
-from webapp.models import Dataset, EHDSCategory, DQDimension, DQMetric, DQMetricValue, DQCategoricalMetricCategory, MaturityDimension, MaturityDimensionValue, MaturityDimensionLevel, Organization
+from webapp.models import Dataset, EHDSCategory, DQDimension, DQMetric, DQMetricValue, DQCategoricalMetricCategory, MaturityDimension, MaturityDimensionValue, MaturityDimensionLevel, Organization, MaturityAssessment
 
 
 def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
@@ -237,7 +237,7 @@ def compute_scores(dataset: Dataset) -> [dict, float]:
     return results, total_score
 
 
-def compute_maturity_score(organization: Organization) -> tuple[dict, float]:
+def compute_maturity_score(assessment: MaturityAssessment) -> tuple[dict, float]:
     matrix_score = 0
 
     dimensions = MaturityDimension.objects.all()
@@ -263,7 +263,7 @@ def compute_maturity_score(organization: Organization) -> tuple[dict, float]:
 
         dimension_value = MaturityDimensionValue.objects.filter(
             maturity_dimension=dimension,
-            maturity_organization=organization
+            maturity_assessment=assessment
         )
 
         if len(dimension_value) == 1:
@@ -274,13 +274,13 @@ def compute_maturity_score(organization: Organization) -> tuple[dict, float]:
     return dimensions_dictionary, matrix_score
 
 
-def plot_maturity(organization: Organization, output_type: str = 'html') -> str:
+def plot_maturity(assessment: MaturityAssessment, output_type: str = 'html') -> str:
     """
         Returns the plot of the Maturity label in graphical format
 
         Params
         ------
-        organization: Organization
+        assessment: MaturityAssessment
         output_type: str
             - html -> for embedding div into website
             - img -> for base64 encoded image
@@ -296,7 +296,7 @@ def plot_maturity(organization: Organization, output_type: str = 'html') -> str:
     hover_texts = []
     colors = {}
 
-    maturity_dimensions, matrix_score = compute_maturity_score(organization=organization)
+    maturity_dimensions, matrix_score = compute_maturity_score(assessment=assessment)
 
     # Predefined color palette for categories
     category_colors = [
