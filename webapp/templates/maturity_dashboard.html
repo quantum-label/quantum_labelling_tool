@@ -60,10 +60,10 @@
             <table id="assessments" class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Name</th>
+                    <th scope="col">Workflow</th>
                     <th scope="col">Date</th>
                     <th scope="col">Score</th>
-                    <th scope="col">View/Edit</th>
+                    <th scope="col">Assessment</th>
                     <th scope="col">Delete</th>
                 </tr>
                 </thead>
@@ -74,7 +74,7 @@
             <div class="row justify-content-center mt-3">
                 <div class="col-auto">
                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAssessmentModal">
-                        Create new assessment
+                        Create new workflow assessment
                     </button>
                 </div>
             </div>
@@ -95,12 +95,12 @@
       <form action="{% url 'maturity_create' %}" method="POST">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="createAssessmentModalLabel">New Maturity Assessment</h5>
+            <h5 class="modal-title" id="createAssessmentModalLabel">New Workflow Assessment</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label for="assessment_name" class="form-label">Assessment Name</label>
+              <label for="assessment_name" class="form-label">Assessment Workflow name</label>
               <input type="text" class="form-control" id="assessment_name" name="assessment_name" placeholder="e.g. Q1 2024 Assessment" required>
             </div>
           </div>
@@ -130,7 +130,7 @@
                 {
                     "data": "view_url",
                     "render": function(data, type, row) {
-                        return '<a href="' + data + '"><button class="btn btn-secondary">View/Edit</button></a>';
+                        return '<a href="' + data + '"><button class="btn btn-secondary">Edit</button></a>';
                     },
                     className: "text-center",
                     "orderable": false
