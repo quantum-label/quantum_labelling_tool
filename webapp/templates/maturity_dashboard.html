@@ -52,20 +52,26 @@
     <div class="row">
         <h4>My organization - {{ organization }}</h4>
         <hr>
-        <p style="color: grey;"><i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i></p>
+        <p style="color: grey;">
+            <i>Maturity is a feature at the data holder level. It refers to the level of automation of data and data quality management procedures.</i>
+            <br><br>
+            A data holder can count with multiple <b>Data Governance Workflows</b>: a set of established processes, policies, and structures to manage specific types or categories of data assets, or those used at specific sub-units of the data holder.
+            <br>
+            Each workflow can therefore count with a specific <b>Maturity Assessment</b>, which will evaluate how advanced and automated this workflow is, providing a score that reflects the organization's capability to ensure data quality and governance.
+        </p>
     </div>
 
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-sm-12 mb-5">
             <table id="assessments" class="table table-striped">
                 <thead>
-                <tr>
-                    <th scope="col">Workflow</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Score</th>
-                    <th scope="col">Assessment</th>
-                    <th scope="col">Delete</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Workflow</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Assessment</th>
+                        <th scope="col">Delete</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -74,7 +80,7 @@
             <div class="row justify-content-center mt-3">
                 <div class="col-auto">
                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createAssessmentModal">
-                        Create workflow
+                        Create Data Governance Workflow
                     </button>
                 </div>
             </div>
@@ -90,27 +96,27 @@
 
 <!-- Create Assessment Modal -->
 <div class="modal fade" id="createAssessmentModal" tabindex="-1" aria-labelledby="createAssessmentModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{% url 'maturity_create' %}" method="POST">
-          {% csrf_token %}
-          <div class="modal-header">
-            <h5 class="modal-title" id="createAssessmentModalLabel">New Workflow Assessment</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="assessment_name" class="form-label">Assessment Workflow name</label>
-              <input type="text" class="form-control" id="assessment_name" name="assessment_name" placeholder="e.g. Q1 2024 Assessment" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success">Create</button>
-          </div>
-      </form>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{% url 'maturity_create' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createAssessmentModalLabel">New Data Governance Workflow</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="assessment_name" class="form-label">Data Governance Workflow name</label>
+                        <input type="text" class="form-control" id="assessment_name" name="assessment_name" placeholder="e.g. Q1 2024 Workflow" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
@@ -119,34 +125,33 @@
             responsive: true,
             processing: true,
             data: {{ assessments | safe }},
-            order: [
-                [1, "desc"]
-            ],
-            pageLength: 10,
-            columns: [
-                { "data": "name" },
-                { "data": "date", className: "text-center" },
-                { "data": "score", className: "text-center" },
-                {
-                    "data": "view_url",
-                    "render": function(data, type, row) {
-                        return '<a href="' + data + '"><button class="btn btn-secondary">Edit</button></a>';
-                    },
-                    className: "text-center",
-                    "orderable": false
-                },
-                {
-                    "data": "delete_url",
-                    "render": function(data, type, row) {
-                        return '<a href="' + data + '" onclick="return confirm(\'Are you sure?\')"><button class="btn btn-danger">Delete</button></a>';
-                    },
-                    className: "text-center",
-                    "orderable": false
-                }
-            ]
+        order: [
+        [1, "desc"]
+    ],
+        pageLength: 10,
+        columns: [
+        { "data": "name" },
+        { "data": "date", className: "text-center" },
+        { "data": "score", className: "text-center" },
+        {
+            "data": "view_url",
+            "render": function (data, type, row) {
+                return '<a href="' + data + '"><button class="btn btn-secondary">Edit</button></a>';
+            },
+            className: "text-center",
+            "orderable": false
+        },
+        {
+            "data": "delete_url",
+            "render": function (data, type, row) {
+                return '<a href="' + data + '" onclick="return confirm(\'Are you sure?\')"><button class="btn btn-danger">Delete</button></a>';
+            },
+            className: "text-center",
+            "orderable": false
+        }
+    ]
         });
     });
 </script>
 
 {% endblock %}
-
