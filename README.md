@@ -75,11 +75,13 @@ docker-compose up --build
 ```
 
 **Fill the initial database information:**
+
+Once the application has started (the `quantumtoolwebapp` logs show that migrations have been applied and the server is running), load the initial data (EHDS categories, DQ dimensions, metrics, maturity dimensions...) manually. This step is only needed once, on a fresh database:
 ```bash
 docker exec -it quantumtooldatabase bash
 mysql -u root -p
 use quantum;
-source /docker-entrypoint-initdb.d/init.sql;
+source /opt/quantum/init/init.sql;
 ```
 
 **Access the application:**
@@ -91,11 +93,13 @@ source /docker-entrypoint-initdb.d/init.sql;
 
 Our automated Docker setup handles everything:
 
-1. **Database Initialization**: MariaDB starts with initial schema and sample data
-2. **Django Migrations**: Applied automatically to update database schema
+1. **Database Startup**: MariaDB starts with an empty `quantum` database. The `docker/init` folder is mounted at `/opt/quantum/init`, so `init.sql` is available inside the container but is **not** executed automatically
+2. **Django Migrations**: Once the database is healthy, the web app applies all migrations automatically, creating the database tables
 3. **Superuser Creation**: Admin user created with credentials above
 4. **Static Files**: CSS/JS files collected automatically
 5. **Application Startup**: Web server starts and becomes ready
+
+The initial data in `init.sql` must be loaded manually after the first startup, as described in *Fill the initial database information*.
 
 ### Environment Configuration
 
@@ -124,7 +128,7 @@ docker-compose down -v
 
 # Access containers
 docker exec -it quantumtoolwebapp bash
-docker exec -it quantumdatabase bash
+docker exec -it quantumtooldatabase bash
 ```
 
 ## Technology Stack
