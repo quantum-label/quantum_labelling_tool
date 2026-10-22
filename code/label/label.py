@@ -160,7 +160,7 @@ def plot_label(dataset: Dataset, output_type: str = 'html') -> Optional[str]:
             default_width='100%',
             include_plotlyjs='cdn',
             full_html=False,
-            config={'staticPlot': False}
+            config={'staticPlot': False, 'displaylogo': False}
         )
 
         return html_div
@@ -393,7 +393,7 @@ def plot_maturity(assessment: MaturityAssessment, output_type: str = 'html') -> 
             default_width='100%',
             include_plotlyjs='cdn',
             full_html=False,
-            config={'staticPlot': False}
+            config={'staticPlot': False, 'displaylogo': False}
         )
 
         return html_div
