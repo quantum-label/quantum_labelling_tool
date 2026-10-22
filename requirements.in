@@ -1,7 +1,7 @@
-Django
-rdflib
-plotly
-pandas
-gunicorn
-whitenoise
-mysqlclient
+Django          # BSD-3-Clause
+rdflib          # BSD-3-Clause
+plotly          # MIT
+pandas          # BSD-3-Clause
+gunicorn        # MIT
+whitenoise      # MIT
+mysqlclient     # GPL-2.0
